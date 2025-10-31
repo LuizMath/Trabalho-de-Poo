@@ -1,0 +1,30 @@
+.text-primary {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+}
+
+.text-secondary {
+  -fx-font-size: 16px;
+}
+
+.input-primary {
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-padding: 10px;
+  -fx-faint-focus-color: transparent;
+  -fx-focus-color: transparent;
+  -fx-max-width: 500px;
+}
+
+.input-primary:focused {
+  -fx-border-color: gray;
+}
+
+.submit-button {
+  -fx-max-width: 500px;
+  -fx-padding: 10px;
+  -fx-cursor: hand;
+  -fx-background-radius: 8px;
+  -fx-background-color: #007bff;
+  -fx-text-fill: #ffffff;
+}

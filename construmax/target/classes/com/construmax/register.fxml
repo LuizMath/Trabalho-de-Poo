@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="center" spacing="20" stylesheets="@Styles/LoginStyles.css" xmlns:fx="http://javafx.com/fxml" fx:controller="com.construmax.Controllers.RegisterController">
+    <children>
+        <Label text="Construmax" styleClass="text-primary"></Label>
+        <Label text="Faça seu Cadastro" styleClass="text-secondary"></Label>
+        <TextField promptText="name" focusTraversable="false" styleClass="input-primary"/>
+        <TextField promptText="CPF" focusTraversable="false" styleClass="input-primary"/>
+        <TextField promptText="phone" focusTraversable="false" styleClass="input-primary"/>
+        <TextField promptText="example@gmail.com" focusTraversable="false" styleClass="input-primary"/>
+        <PasswordField promptText="password" focusTraversable="false" styleClass="input-primary"/>
+        <Button text="Entrar" styleClass="submit-button"></Button>
+        <HBox alignment="center">
+            <Label text="Possui conta?"></Label>
+            <Hyperlink fx:id="hyperlink" text="clique aqui!"></Hyperlink>
+        </HBox>
+    </children>
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+</VBox>
