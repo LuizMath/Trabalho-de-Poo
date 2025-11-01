@@ -5,8 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-
+import io.github.cdimascio.dotenv.Dotenv;
 import java.io.IOException;
 
 import com.construmax.Database.DatabaseConnection;
@@ -14,6 +13,7 @@ import com.construmax.Database.DatabaseConnection;
 public class App extends Application {
 
     private static Scene scene;
+    private static Dotenv dotenv = Dotenv.configure().directory("/Users/joaovitor/Documents/GitHub/Trabalho-de-Poo/construmax/.env").load();
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -32,7 +32,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        DatabaseConnection.getConnection();
+        DatabaseConnection.init(dotenv);
         launch(args);
     }
 

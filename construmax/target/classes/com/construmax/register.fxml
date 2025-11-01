@@ -13,12 +13,12 @@
     <children>
         <Label text="Construmax" styleClass="text-primary"></Label>
         <Label text="Faça seu Cadastro" styleClass="text-secondary"></Label>
-        <TextField promptText="name" focusTraversable="false" styleClass="input-primary"/>
-        <TextField promptText="CPF" focusTraversable="false" styleClass="input-primary"/>
-        <TextField promptText="phone" focusTraversable="false" styleClass="input-primary"/>
-        <TextField promptText="example@gmail.com" focusTraversable="false" styleClass="input-primary"/>
-        <PasswordField promptText="password" focusTraversable="false" styleClass="input-primary"/>
-        <Button text="Entrar" styleClass="submit-button"></Button>
+        <TextField promptText="name" fx:id="name" focusTraversable="false" styleClass="input-primary"/>
+        <TextField promptText="CPF"  fx:id="CPF" focusTraversable="false" styleClass="input-primary"/>
+        <TextField promptText="phone" fx:id="phone" focusTraversable="false" styleClass="input-primary"/>
+        <TextField promptText="example@gmail.com" fx:id="email" focusTraversable="false" styleClass="input-primary"/>
+        <PasswordField promptText="password" fx:id="password" focusTraversable="false" styleClass="input-primary"/>
+        <Button text="Cadastrar" styleClass="submit-button" fx:id="submit"></Button>
         <HBox alignment="center">
             <Label text="Possui conta?"></Label>
             <Hyperlink fx:id="hyperlink" text="clique aqui!"></Hyperlink>

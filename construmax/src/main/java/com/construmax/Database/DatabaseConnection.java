@@ -1,24 +1,37 @@
 package com.construmax.Database;
 import java.sql.SQLException;
-import java.sql.DriverManager;
-import java.sql.Connection;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
-public class DatabaseConnection {
-    
+import java.sql.DriverManager;
+import java.sql.Connection;
 
-    // Método que cria e devolve uma conexão pronta
+public class DatabaseConnection {
+    private static Dotenv dotenv;
+    private static Connection connection;
+    public static void init (Dotenv d) {
+        dotenv = d;
+    }
     public static Connection getConnection() {
         try {
             String url = dotenv.get("DB_URL");
             String user = dotenv.get("DB_USER");
             String password = dotenv.get("DB_PASSWORD");
-            Connection conn = DriverManager.getConnection(url, user, password);
-            System.out.println("✅ Conectado ao banco!");
-            return conn;
+            connection = DriverManager.getConnection(url, user, password);
+            System.out.println("Conectado ao banco!");
+            return connection;
         } catch (SQLException e) {
-            System.out.println("❌ Erro ao conectar: " + e.getMessage());
+            System.out.println("Erro ao conectar: " + e.getMessage());
             return null;
+        }
+    }
+    public static void getDisconnect () {
+        try {
+            connection.close();
+            connection = null;
+            System.out.println("Conexão encerrada com sucesso!");
+        } catch (SQLException ex) {
+            System.out.println("Erro ao fechar conexão: " + ex.getMessage());
         }
     }
 }
