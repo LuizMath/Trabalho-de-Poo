@@ -1,6 +1,8 @@
 package com.construmax.Database;
 import java.sql.SQLException;
 
+import com.construmax.Utils.Toast;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.sql.DriverManager;
@@ -18,7 +20,6 @@ public class DatabaseConnection {
             String user = dotenv.get("DB_USER");
             String password = dotenv.get("DB_PASSWORD");
             connection = DriverManager.getConnection(url, user, password);
-            System.out.println("Conectado ao banco!");
             return connection;
         } catch (SQLException e) {
             System.out.println("Erro ao conectar: " + e.getMessage());

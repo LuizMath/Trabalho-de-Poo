@@ -11,15 +11,20 @@ import java.io.IOException;
 import com.construmax.Database.DatabaseConnection;
 
 public class App extends Application {
-
+    private static Stage primaryStage;
     private static Scene scene;
-    private static Dotenv dotenv = Dotenv.configure().directory("/Users/joaovitor/Documents/GitHub/Trabalho-de-Poo/construmax/.env").load();
+    private static Dotenv dotenv = Dotenv.configure().directory("/Users/luizmatheus/Documents/Programação/Class/Class/construmax/.env").load();
 
     @Override
     public void start(Stage stage) throws IOException {
+        primaryStage = stage;
         scene = new Scene(loadFXML("login"), 640, 480);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public static Stage getPrimaryStage() {
+        return primaryStage;
     }
 
     public static void setRoot(String fxml) throws IOException {
