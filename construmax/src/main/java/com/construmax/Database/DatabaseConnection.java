@@ -1,8 +1,6 @@
 package com.construmax.Database;
 import java.sql.SQLException;
 
-import com.construmax.Utils.Toast;
-
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.sql.DriverManager;

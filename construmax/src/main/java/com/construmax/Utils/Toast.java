@@ -13,6 +13,17 @@ public class Toast {
         .owner(App.getPrimaryStage())
         .position(Pos.BOTTOM_RIGHT)
         .hideAfter(javafx.util.Duration.seconds(3))
+        .darkStyle()
         .showInformation();
+    }
+    public static final void showToastError (String text) {
+        Notifications.create()
+        .title("Erro!")
+        .text(text)
+        .owner(App.getPrimaryStage())
+        .position(Pos.BOTTOM_RIGHT)
+        .hideAfter(javafx.util.Duration.seconds(3))
+        .darkStyle()
+        .showError();
     }
 }

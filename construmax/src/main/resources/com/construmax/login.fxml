@@ -14,7 +14,7 @@
         <Label text="Construmax" styleClass="text-primary"></Label>
         <Label text="Faça seu Login" styleClass="text-secondary"></Label>
         <TextField promptText="example@gmail.com" fx:id="email" focusTraversable="false" styleClass="input-primary"/>
-        <PasswordField promptText="password" focusTraversable="false" styleClass="input-primary"/>
+        <PasswordField promptText="password" fx:id="password" focusTraversable="false" styleClass="input-primary"/>
         <Button text="Entrar" fx:id="submit" styleClass="submit-button"></Button>
         <HBox alignment="center">
             <Label text="Não possui conta?"></Label>

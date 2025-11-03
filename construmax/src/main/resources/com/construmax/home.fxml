@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Separator?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" stylesheets="@Styles/Home.css" fx:controller="com.construmax.Controllers.HomeController">
+  <fx:define>
+    <ToggleGroup fx:id="toggleGroup"/>
+  </fx:define>
+    <left>
+      <VBox styleClass="sidebar-primary" spacing="20">
+          <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label>
+              <graphic>
+                <FontIcon iconLiteral="fas-tools" iconSize="20"/>
+              </graphic>
+            </Label>
+            <Label text="Construmax" styleClass="label-primary"></Label>
+          </HBox>
+          <Separator />
+          <ToggleButton toggleGroup="$toggleGroup" styleClass="button-primary" selected="true">Cadastrar Equipamento</ToggleButton>
+          <ToggleButton toggleGroup="$toggleGroup" styleClass="button-primary">Estoque</ToggleButton>
+      </VBox>
+    </left>
+    <center>
+      <VBox fx:id="contentVBox" spacing="20"
+          alignment="CENTER">
+      </VBox>
+    </center>
+</BorderPane>

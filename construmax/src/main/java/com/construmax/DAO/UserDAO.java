@@ -23,18 +23,27 @@ public class UserDAO {
         this.connection = connection;
     }
 
-    public void authenticateUser (String email) {
+    public void authenticateUser (String email, String password) {
         String sqlStatement = "select email, password from Users where email = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sqlStatement);
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                String emailx = rs.getString("email");
-                String password = rs.getString("password");
-                System.out.println(emailx + password);
+                String passwordAuth = rs.getString("password");
+                if (passwordEncoder.matches(password, passwordAuth)) {
+                    try {
+                        DatabaseConnection.getDisconnect();
+                        App.setRoot("home");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    Toast.showToastError("Senha incorreta!");
+                }
+                return;
             }
-            DatabaseConnection.getDisconnect();
+            Toast.showToastError("Conta não encontrada!");
         } catch (SQLException ex) {
             System.out.println("Erro ao fazer select: " + ex.getMessage());
         }
@@ -61,7 +70,7 @@ public class UserDAO {
         if (execute) {
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
-                @Override 
+                @Override
                 public void run () {
                     try {
                         App.setRoot("login");
@@ -72,5 +81,5 @@ public class UserDAO {
             }, 3000);
             return;
         }
-    } 
+    }
 }

@@ -6,6 +6,9 @@ module com.construmax {
     requires java.sql;
     requires spring.security.crypto;
     requires org.controlsfx.controls;
+    requires org.kordamp.ikonli.core;
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.fontawesome6;
     requires transitive io.github.cdimascio.dotenv.java;
     opens com.construmax.Controllers to javafx.fxml;
     opens com.construmax to javafx.fxml;
