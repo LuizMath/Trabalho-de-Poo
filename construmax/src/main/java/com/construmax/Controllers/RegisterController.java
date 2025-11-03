@@ -37,42 +37,17 @@ public class RegisterController {
     private void switchToLogin () throws IOException {
         App.setRoot("login");
     }
-    @FXML 
-    private void getName () {
-        name.textProperty().addListener((observable, oldValue, newValue) -> {
-            user.setName(newValue);
-        });
-    }
-    @FXML
-    private void getPhone () {
-        phone.textProperty().addListener((observable, oldValue, newValue) -> {
-            user.setPhone(newValue);
-        });
-    }
-    @FXML
-    private void getEmail() {
-        email.textProperty().addListener((observable, oldValue, newValue) -> {
-            user.setEmail(newValue);
-        });
-    }
-    @FXML
-    private void getCPF () {
-        CPF.textProperty().addListener((observable, oldValue, newValue) -> {
-            user.setCPF(newValue);
-        });
-    }
-    @FXML
-    private void getPassword () {
-        password.textProperty().addListener((observable, oldValue, newValue) -> {
-            user.setPassword(newValue);
-        });
-    }
     @FXML
     private void clickSubmitButton () {
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 UserDAO userDAO = new UserDAO(connection);
+                user.setEmail(email.getText());
+                user.setCPF(CPF.getText());
+                user.setName(name.getText());
+                user.setPassword(password.getText());
+                user.setPhone(phone.getText());
                 userDAO.insertUser(user);
             }
         });
@@ -93,11 +68,6 @@ public class RegisterController {
     @FXML
     public void initialize () {
         connection = DatabaseConnection.getConnection();
-        getName();
-        getCPF();
-        getEmail();
-        getPassword();
-        getPhone();
         clickHyperLink();
         clickSubmitButton();
     }

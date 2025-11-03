@@ -3,6 +3,7 @@ package com.construmax.DAO;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,6 +21,23 @@ public class UserDAO {
     private static boolean execute;
     public UserDAO (Connection connection) {
         this.connection = connection;
+    }
+
+    public void authenticateUser (String email) {
+        String sqlStatement = "select email, password from Users where email = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sqlStatement);
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String emailx = rs.getString("email");
+                String password = rs.getString("password");
+                System.out.println(emailx + password);
+            }
+            DatabaseConnection.getDisconnect();
+        } catch (SQLException ex) {
+            System.out.println("Erro ao fazer select: " + ex.getMessage());
+        }
     }
 
     public void insertUser (User user) {

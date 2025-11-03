@@ -13,9 +13,9 @@
     <children>
         <Label text="Construmax" styleClass="text-primary"></Label>
         <Label text="Faça seu Login" styleClass="text-secondary"></Label>
-        <TextField promptText="example@gmail.com" focusTraversable="false" styleClass="input-primary"/>
+        <TextField promptText="example@gmail.com" fx:id="email" focusTraversable="false" styleClass="input-primary"/>
         <PasswordField promptText="password" focusTraversable="false" styleClass="input-primary"/>
-        <Button text="Entrar" styleClass="submit-button"></Button>
+        <Button text="Entrar" fx:id="submit" styleClass="submit-button"></Button>
         <HBox alignment="center">
             <Label text="Não possui conta?"></Label>
             <Hyperlink fx:id="hyperlink" text="clique aqui!"></Hyperlink>
