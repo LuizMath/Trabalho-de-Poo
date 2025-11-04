@@ -1,11 +1,20 @@
 package com.construmax.Model;
 
 public class User {
+    private int id;
     private String name;
     private String email;
     private String password;
     private String CPF;
     private String phone;
+
+    public int getId () {
+        return this.id;
+    }
+
+    public void setId (int id) {
+        this.id = id;
+    }
 
     public String getName () {
         return this.name;

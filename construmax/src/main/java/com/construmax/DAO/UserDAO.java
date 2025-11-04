@@ -10,6 +10,7 @@ import java.util.TimerTask;
 
 import com.construmax.App;
 import com.construmax.Database.DatabaseConnection;
+import com.construmax.Model.Session;
 import com.construmax.Model.User;
 import com.construmax.Utils.Toast;
 
@@ -24,7 +25,7 @@ public class UserDAO {
         this.connection = connection;
     }
     public void authenticateUser (String email, String password) {
-        String sqlStatement = "select email, password from Users where email = ?";
+        String sqlStatement = "select * from Users where email = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sqlStatement);
             stmt.setString(1, email);
@@ -33,6 +34,13 @@ public class UserDAO {
                 String passwordAuth = rs.getString("password");
                 if (passwordEncoder.matches(password, passwordAuth)) {
                     try {
+                        User user = new User();
+                        user.setId(rs.getInt("id"));
+                        user.setEmail(rs.getString("email"));
+                        user.setName(rs.getString("name"));
+                        user.setPhone(rs.getString("phone"));
+                        user.setCPF(rs.getString("cpf"));
+                        Session.setUser(user);
                         DatabaseConnection.getDisconnect();
                         App.setRoot("home");
                     } catch (IOException ex) {

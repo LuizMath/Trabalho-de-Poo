@@ -1,5 +1,7 @@
 package com.construmax.Controllers;
 
+import com.construmax.DAO.EquipmentDAO;
+import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.Equipment;
 import com.construmax.Model.Equipment.Status;
 
@@ -23,15 +25,19 @@ public class StockController {
   private TableColumn<Equipment, Status> status;
   @FXML
   private TableColumn<Equipment, Double> dailyValue;
-  public void initialize () {
+  @FXML
+  private void equipmentsInTable () {
     name.setCellValueFactory(new PropertyValueFactory<>("name"));
     type.setCellValueFactory(new PropertyValueFactory<>("type"));
     description.setCellValueFactory(new PropertyValueFactory<>("description"));
     status.setCellValueFactory(new PropertyValueFactory<>("status"));
     dailyValue.setCellValueFactory(new PropertyValueFactory<>("dailyValue"));
-    ObservableList<Equipment> equipments = FXCollections.observableArrayList(
-      new Equipment("Chave de fenda", "Ferramenta", "Vonder Imantada Magnética", Status.AVAILABLE, 5.0)
-    );
+    EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
+    ObservableList<Equipment> equipments = equipmentDAO.getAllEquipments();
     tableEquipments.setItems(equipments);
+  }
+  @FXML
+  public void initialize () {
+    equipmentsInTable();
   }
 }
