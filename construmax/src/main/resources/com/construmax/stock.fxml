@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+
+<VBox alignment="TOP_CENTER" spacing="50" stylesheets="@Styles/Stock.css">
+    <children>
+        <Label text="Estoque" styleClass="text-primary"/>
+        <TableView styleClass="table">
+            <columns>
+                <TableColumn text="Nome" prefWidth="200"/>
+                <TableColumn text="Tipo" prefWidth="200"/>
+                <TableColumn text="Descrição" prefWidth="200"/>
+                <TableColumn text="Estado" prefWidth="200"/>
+                <TableColumn text="Valor Diária" prefWidth="200"/>
+            </columns>
+        </TableView>
+    </children>
+</VBox>

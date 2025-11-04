@@ -13,7 +13,7 @@ import com.construmax.Database.DatabaseConnection;
 public class App extends Application {
     private static Stage primaryStage;
     private static Scene scene;
-    private static Dotenv dotenv = Dotenv.configure().directory("construmax\\.env").load();
+    private static Dotenv dotenv = Dotenv.configure().directory("construmax/.env").load();
 
     @Override
     public void start(Stage stage) throws IOException {

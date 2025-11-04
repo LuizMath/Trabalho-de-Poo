@@ -26,8 +26,8 @@
             <Label text="Construmax" styleClass="label-primary"></Label>
           </HBox>
           <Separator />
-          <ToggleButton toggleGroup="$toggleGroup" styleClass="button-primary" selected="true">Cadastrar Equipamento</ToggleButton>
-          <ToggleButton toggleGroup="$toggleGroup" styleClass="button-primary">Estoque</ToggleButton>
+          <ToggleButton toggleGroup="$toggleGroup" fx:id="equipment" styleClass="button-primary" selected="true">Cadastrar Equipamento</ToggleButton>
+          <ToggleButton toggleGroup="$toggleGroup" fx:id="stock" styleClass="button-primary">Estoque</ToggleButton>
       </VBox>
     </left>
     <center>

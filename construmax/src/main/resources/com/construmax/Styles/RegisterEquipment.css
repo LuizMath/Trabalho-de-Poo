@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+.text-primary {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+  -fx-font-family: "Inter", sans-serif;
+}
+
+.input-primary {
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-padding: 10px;
+  -fx-faint-focus-color: transparent;
+  -fx-focus-color: transparent;
+  -fx-max-width: 500px;
+  -fx-font-family: "Inter", sans-serif;
+}
+
+.input-primary:focused {
+  -fx-border-color: gray;
+}
+
+.submit-button {
+  -fx-max-width: 500px;
+  -fx-padding: 10px;
+  -fx-cursor: hand;
+  -fx-background-radius: 8px;
+  -fx-background-color: #007bff;
+  -fx-text-fill: #ffffff;
+  -fx-font-family: "Inter", sans-serif;
+  -fx-margin-top: 15px;
+}
+
+.main-form {
+  -fx-max-width: 600px;
+  -fx-min-height: 500px;
+  -fx-background-color: #fcfcfc;
+  -fx-effect: dropshadow(three-pass-box, rgba(149, 157, 165, 0.2), 8, 0, 0, 0);
+  -fx-padding: 30px;
+  -fx-background-radius: 10px;
+}

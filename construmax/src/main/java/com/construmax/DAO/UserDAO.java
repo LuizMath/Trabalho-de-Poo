@@ -13,6 +13,7 @@ import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.User;
 import com.construmax.Utils.Toast;
 
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserDAO {
@@ -22,7 +23,6 @@ public class UserDAO {
     public UserDAO (Connection connection) {
         this.connection = connection;
     }
-
     public void authenticateUser (String email, String password) {
         String sqlStatement = "select email, password from Users where email = ?";
         try {
