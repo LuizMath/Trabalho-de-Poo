@@ -12,5 +12,6 @@ module com.construmax {
     requires transitive io.github.cdimascio.dotenv.java;
     opens com.construmax.Controllers to javafx.fxml;
     opens com.construmax to javafx.fxml;
+    opens com.construmax.Model to javafx.base;
     exports com.construmax;
 }
