@@ -5,7 +5,6 @@ import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.Equipment;
 import com.construmax.Model.Equipment.Status;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;

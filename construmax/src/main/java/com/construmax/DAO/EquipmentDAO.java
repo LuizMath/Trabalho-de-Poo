@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.Equipment;
-import com.construmax.Model.Session;
 import com.construmax.Model.Equipment.Status;
 import com.construmax.Utils.Toast;
 
@@ -55,7 +54,6 @@ public class EquipmentDAO {
               status = Status.MAINTENANCE;
               break;
           }
-          System.out.println(Session.getUser().getId());
           Equipment equipment = new Equipment(rs.getString("name"), rs.getString("type"), rs.getString("description"), status, rs.getDouble("daily_value"));
           equipments.add(equipment);
         }
