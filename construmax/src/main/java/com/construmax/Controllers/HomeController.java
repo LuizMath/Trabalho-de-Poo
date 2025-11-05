@@ -21,7 +21,7 @@ public class HomeController {
   private ToggleGroup toggleGroup;
 
   @FXML
-  private void switchView () {
+  private void switchView() {
     loadView("registerEquipment");
     toggleGroup.selectedToggleProperty().addListener((new ChangeListener<Toggle>() {
       @Override
@@ -40,6 +40,10 @@ public class HomeController {
               loadView("stock");
               break;
             }
+            case "returnEquipment": {
+              loadView("returnEquipment");
+              break;
+            }
             default:
               break;
           }
@@ -55,18 +59,18 @@ public class HomeController {
 
   private void loadView(String fxml) {
     try {
-        FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        Node node = loader.load();
-        contentVBox.getChildren().setAll(node);
-        if (fxml.equals("stock")) {
-          contentVBox.setAlignment(Pos.TOP_CENTER);
-          contentVBox.setPadding(new Insets(30, 0, 0, 0));
-        } else {
-          contentVBox.setAlignment(Pos.CENTER);
-          contentVBox.setPadding(new Insets(0, 0, 0, 0));
-        }
+      FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+      Node node = loader.load();
+      contentVBox.getChildren().setAll(node);
+      if (fxml.equals("stock")) {
+        contentVBox.setAlignment(Pos.TOP_CENTER);
+        contentVBox.setPadding(new Insets(30, 0, 0, 0));
+      } else {
+        contentVBox.setAlignment(Pos.CENTER);
+        contentVBox.setPadding(new Insets(0, 0, 0, 0));
+      }
     } catch (Exception ex) {
-        ex.printStackTrace();
+      ex.printStackTrace();
     }
   }
 }
