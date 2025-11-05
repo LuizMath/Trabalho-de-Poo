@@ -14,24 +14,27 @@ import com.construmax.Model.Session;
 import com.construmax.Model.User;
 import com.construmax.Utils.Toast;
 
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserDAO {
     private Connection connection;
     private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static boolean execute;
-    public UserDAO (Connection connection) {
+
+    public UserDAO(Connection connection) {
         this.connection = connection;
     }
-    public void authenticateUser (String email, String password) {
+
+    public void authenticateUser(String email, String password) {
         String sqlStatement = "select * from Users where email = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sqlStatement);
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
+                String EmailAuth = rs.getString("email");
                 String passwordAuth = rs.getString("password");
+                System.out.println(EmailAuth + " " + passwordAuth);
                 if (passwordEncoder.matches(password, passwordAuth)) {
                     try {
                         User user = new User();
@@ -57,7 +60,7 @@ public class UserDAO {
         }
     }
 
-    public void insertUser (User user) {
+    public void insertUser(User user) {
         String sqlStatement = "insert into Users (name, password, phone, cpf, email) values (?, ?, ?, ?, ?)";
 
         try {
@@ -79,7 +82,7 @@ public class UserDAO {
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
-                public void run () {
+                public void run() {
                     try {
                         App.setRoot("login");
                     } catch (IOException ex) {
