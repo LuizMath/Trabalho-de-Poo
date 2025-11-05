@@ -32,9 +32,7 @@ public class UserDAO {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                String EmailAuth = rs.getString("email");
                 String passwordAuth = rs.getString("password");
-                System.out.println(EmailAuth + " " + passwordAuth);
                 if (passwordEncoder.matches(password, passwordAuth)) {
                     try {
                         User user = new User();

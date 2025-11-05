@@ -29,6 +29,7 @@
           <ToggleButton toggleGroup="$toggleGroup" fx:id="equipment" styleClass="button-primary" selected="true">Cadastrar Equipamento</ToggleButton>
           <ToggleButton toggleGroup="$toggleGroup" fx:id="stock" styleClass="button-primary">Estoque</ToggleButton>
           <ToggleButton toggleGroup="$toggleGroup" fx:id="rentEquipment" styleClass="button-primary">Alugar Equipamento</ToggleButton>
+          <ToggleButton toggleGroup="$toggleGroup" fx:id="returnEquipment" styleClass="button-primary">Devolver Equipamento</ToggleButton>
       </VBox>
     </left>
     <center>
