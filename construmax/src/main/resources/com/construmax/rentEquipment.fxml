@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane stylesheets="@Styles/RentEquipment.css" xmlns:fx="http://javafx.com/fxml" fx:controller="com.construmax.Controllers.RentEquipmentController">
+    <children>
+        <VBox alignment="TOP_CENTER" spacing="20" styleClass="main-form" maxWidth="800">
+            <children>
+                <Label text="Alugar Equipamento - Gestão de Contratos" styleClass="text-primary" />
+                <VBox spacing="15">
+                    <Label style="-fx-font-size: 16px" text="1. Dados do Cliente (Locatário)" />
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField styleClass="input-primary" fx:id="cpfField" focusTraversable="false" promptText="CPF do Cliente"/>
+                        <Button text="Buscar Cliente" fx:id="searchClientButton" onAction="#searchClient" styleClass="submit-button" minWidth="120" />
+                    </HBox>
+                    <Label fx:id="clientInfoLabel" text="Nome: N/A | Status: Não Buscado" style="-fx-font-weight: bold;"/>
+                </VBox>
+                <Separator />
+                <VBox spacing="15">
+                    <Label style="-fx-font-size: 16px" text="2. Seleção de Equipamentos Disponíveis" />
+                    <TableView fx:id="equipmentTable" prefHeight="200" editable="true">
+                        <columns>
+                            <TableColumn fx:id="colSelect" text="Sel." prefWidth="50"/>
+                            <TableColumn fx:id="colName" text="Nome" prefWidth="150"/>
+                            <TableColumn fx:id="colType" text="Tipo" prefWidth="150"/>
+                            <TableColumn fx:id="colDailyValue" text="Diária (R$)" prefWidth="100"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+                <Separator />
+                <VBox spacing="15">
+                    <Label style="-fx-font-size: 16px" text="3. Prazos e Valores do Contrato" />
+                    <HBox spacing="20">
+                        <VBox spacing="5">
+                            <Label text="Data de Início da Locação"/>
+                            <DatePicker fx:id="startDatePicker" promptText="Início" onAction="#calculateTotal"/>
+                        </VBox>
+                        <VBox spacing="5">
+                            <Label text="Data Prevista de Devolução"/>
+                            <DatePicker fx:id="endDatePicker" promptText="Devolução" onAction="#calculateTotal"/>
+                        </VBox>
+                    </HBox>
+                    <Label fx:id="totalValueLabel" text="Valor Total (Bruto/Líquido): R$ 0,00" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+                </VBox>
+                <Button text="Criar Contrato de Locação" fx:id="submitContractButton" onAction="#createContract" styleClass="submit-button" maxWidth="Infinity" />
+            </children>
+        </VBox>
+    </children>
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+</StackPane>

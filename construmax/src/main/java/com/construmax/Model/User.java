@@ -7,7 +7,7 @@ public class User {
     private String password;
     private String CPF;
     private String phone;
-
+    private boolean isVIP = false;
     public int getId () {
         return this.id;
     }
@@ -54,5 +54,12 @@ public class User {
 
      public void setPhone(String phone) {
         this.phone = phone;
+    }
+    public boolean isVIP() {
+        return this.isVIP;
+    }
+
+    public void setVIP(boolean isVIP) {
+        this.isVIP = isVIP;
     }
 }

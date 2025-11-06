@@ -1,9 +1,13 @@
 package com.construmax.Controllers;
 
+import java.io.IOException;
+
 import com.construmax.App;
+import com.construmax.Utils.Toast;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -19,7 +23,6 @@ public class HomeController {
   private VBox contentVBox;
   @FXML
   private ToggleGroup toggleGroup;
-
   @FXML
   private void switchView() {
     loadView("registerEquipment");
@@ -43,6 +46,9 @@ public class HomeController {
             case "returnEquipment": {
               loadView("returnEquipment");
               break;
+            }
+            case "rentEquipment": {
+              loadView("rentEquipment");
             }
             default:
               break;

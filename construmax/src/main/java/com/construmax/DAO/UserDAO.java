@@ -24,6 +24,22 @@ public class UserDAO {
     public UserDAO(Connection connection) {
         this.connection = connection;
     }
+    public User findUserByIdentifier(String identifier) throws SQLException {
+        String sql = "SELECT id, name FROM Users WHERE email = ? OR cpf = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, identifier);
+            stmt.setString(2, identifier);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setName(rs.getString("name"));
+                    return user; 
+                }
+            }
+        }
+        return null;
+    }
 
     public void authenticateUser(String email, String password) {
         String sqlStatement = "select * from Users where email = ?";
@@ -57,6 +73,29 @@ public class UserDAO {
             System.out.println("Erro ao fazer select: " + ex.getMessage());
         }
     }
+    public User getUserByCpf(String cpf) {
+    String sql = "SELECT id, name, email, phone, cpf FROM Users WHERE cpf = ?";
+    
+    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        stmt.setString(1, cpf);
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
+                user.setCPF(rs.getString("cpf"));
+                user.setVIP(false);
+                return user; 
+            }
+        }
+    } catch (SQLException ex) {
+        System.out.println("Erro ao buscar usuário por CPF: " + ex.getMessage());
+    }
+    return null;
+}
 
     public void insertUser(User user) {
         String sqlStatement = "insert into Users (name, password, phone, cpf, email) values (?, ?, ?, ?, ?)";
