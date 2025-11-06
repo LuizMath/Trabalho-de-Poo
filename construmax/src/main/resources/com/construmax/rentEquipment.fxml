@@ -12,10 +12,9 @@
                 <VBox spacing="15">
                     <Label style="-fx-font-size: 16px" text="1. Dados do Cliente (Locatário)" />
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <TextField styleClass="input-primary" fx:id="cpfField" focusTraversable="false" promptText="CPF do Cliente"/>
-                        <Button text="Buscar Cliente" fx:id="searchClientButton" onAction="#searchClient" styleClass="submit-button" minWidth="120" />
+                        <TextField styleClass="input-primary" fx:id="nameField" focusTraversable="false" disable="true" promptText="Nome"/>
+                        <TextField styleClass="input-primary" fx:id="cpfField" focusTraversable="false" disable="true" promptText="CPF"/>
                     </HBox>
-                    <Label fx:id="clientInfoLabel" text="Nome: N/A | Status: Não Buscado" style="-fx-font-weight: bold;"/>
                 </VBox>
                 <Separator />
                 <VBox spacing="15">

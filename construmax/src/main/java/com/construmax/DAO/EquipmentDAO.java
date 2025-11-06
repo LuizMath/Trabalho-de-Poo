@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.Equipment;
-import com.construmax.Model.Equipment.Status;
 import com.construmax.Utils.Toast;
 import java.util.List;
 
@@ -22,9 +21,9 @@ public class EquipmentDAO {
     String sqlUpdateEquip = "UPDATE Equipments SET state = ? WHERE id = ?";
     try (PreparedStatement stmtUpdate = connection.prepareStatement(sqlUpdateEquip)) {
         for (Equipment equip : equipments) {
-            stmtUpdate.setString(1, newStatus.getDescription()); 
-            stmtUpdate.setInt(2, equip.getId()); 
-            stmtUpdate.addBatch(); 
+            stmtUpdate.setString(1, newStatus.getDescription());
+            stmtUpdate.setInt(2, equip.getId());
+            stmtUpdate.addBatch();
         }
         stmtUpdate.executeBatch();
         return true;
@@ -34,14 +33,14 @@ public class EquipmentDAO {
     }
 }
   public boolean insertEquipment (Equipment equipment) {
-    String sqlStatement = "insert into Equipments (name, type, description, state, daily_value) values (?, ?, ?, ?, ?)";
+    String sqlStatement = "insert into Equipments (name, type, description, daily_value, quantity) values (?, ?, ?, ?, ?)";
     try {
       PreparedStatement stmt = connection.prepareStatement(sqlStatement);
       stmt.setString(1, equipment.getName());
       stmt.setString(2, equipment.getType());
       stmt.setString(3, equipment.getDescription());
-      stmt.setString(4, equipment.getStatus());
-      stmt.setDouble(5, equipment.getDailyValue());
+      stmt.setDouble(4, equipment.getDailyValue());
+      stmt.setInt(5, equipment.getQuantity());
       stmt.executeUpdate();
       Toast.showToastSucess("Equipamento Cadastrado!");
       DatabaseConnection.getDisconnect();
@@ -54,23 +53,14 @@ public class EquipmentDAO {
   }
   public ObservableList<Equipment> getAllEquipments() {
       ObservableList<Equipment> equipments = FXCollections.observableArrayList();
-      String sqlStatement = "select * from Equipments";
+      String sqlStatement = "SELECT Eq.name, Eq.type, Eq.quantity, Eq.description, Eq.daily_value, St.total_quantity, St.available_quantity, St.maintenance_quantity FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
       try {
         PreparedStatement stmt = connection.prepareStatement(sqlStatement);
         ResultSet rs = stmt.executeQuery();
-        Status status;
         while (rs.next()) {
-          switch (rs.getString("state")) {
-            case "disponível":
-              status = Status.AVAILABLE;
-              break;
-            case "alugado":
-              status = Status.RENTED;
-            default:
-              status = Status.MAINTENANCE;
-              break;
-          }
-          Equipment equipment = new Equipment(rs.getString("name"), rs.getString("type"), rs.getString("description"), status, rs.getDouble("daily_value"));
+          Equipment equipment = new Equipment(rs.getString("name"), rs.getString("type"), rs.getString("description"), status, rs.getDouble("daily_value"), rs.getInt("quantity"));
+          equipment.setAvailableQuantity(rs.getInt("available_quantity"));
+          equipment.setMaintenanceQuantity(rs.getInt("maintenance_quantity"));
           equipments.add(equipment);
         }
       } catch (SQLException ex) {
@@ -81,18 +71,17 @@ public class EquipmentDAO {
   public ObservableList<Equipment> getAvailableEquipments() {
     ObservableList<Equipment> equipments = FXCollections.observableArrayList();
     String sqlStatement = "SELECT id, name, type, description, daily_value FROM Equipments WHERE state = ?";
-    
+
     try (PreparedStatement stmt = connection.prepareStatement(sqlStatement)) {
-        stmt.setString(1, Status.AVAILABLE.getDescription());
+        stmt.setString(1, );
         ResultSet rs = stmt.executeQuery();
-        
+
         while (rs.next()) {
             Equipment equipment = new Equipment(
                 rs.getInt("id"),
-                rs.getString("name"), 
-                rs.getString("type"), 
-                rs.getString("description"), 
-                Status.AVAILABLE, 
+                rs.getString("name"),
+                rs.getString("type"),
+                rs.getString("description"),
                 rs.getDouble("daily_value")
             );
             equipments.add(equipment);

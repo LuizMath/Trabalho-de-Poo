@@ -4,44 +4,27 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.BooleanProperty;
 
 public class Equipment {
-  public enum Status {
-    AVAILABLE("disponível"),
-    MAINTENANCE("manutenção"),
-    RENTED("alugado");
-
-    private final String description;
-
-    Status (String description) {
-      this.description = description;
-    }
-
-    
-
-    public String getDescription () {
-      return this.description;
-    }
-
-  }
-  public Equipment(int id, String name, String type, String description, Status status, Double dailyValue) {
+  public Equipment(int id, String name, String type, String description, Double dailyValue) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.description = description;
-        this.status = status;
         this.dailyValue = dailyValue;
   }
-  public Equipment ( String name, String type, String description, Status status, Double dailyValue) {
+  public Equipment ( String name, String type, String description, Double dailyValue, int quantity) {
     this.name = name;
     this.type = type;
     this.description = description;
-    this.status = status;
     this.dailyValue = dailyValue;
+    this.quantity = quantity;
   }
   private int id;
   private String name;
+  private int availableQuantity;
+  private int maintenanceQuantity;
   private String type;
   private String description;
-  private Status status;
+  private int quantity;
   private Double dailyValue;
   private BooleanProperty selected = new SimpleBooleanProperty(false);
 
@@ -53,20 +36,32 @@ public class Equipment {
   public String getName () {
     return this.name;
   }
-   public String getType () {
+  public String getType () {
     return this.type;
   }
-   public String getDescription () {
+  public String getDescription () {
     return this.description;
   }
-   public Double getDailyValue () {
-    return this.dailyValue;
+  public int getQuantity () {
+    return this.quantity;
   }
-  public String getStatus () {
-    return this.status.getDescription();
+  public Double getDailyValue () {
+    return this.dailyValue;
   }
   public int getId() {
     return this.id;
+  }
+  public int getAvailableQuantity () {
+    return this.availableQuantity;
+  }
+  public int getMaintenanceQuantity () {
+    return this.maintenanceQuantity;
+  }
+  public void setAvailableQuantity (int availableQuantity) {
+    this.availableQuantity = availableQuantity;
+  }
+  public void setMaintenanceQuantity (int maintenanceQuantity) {
+    this.maintenanceQuantity = maintenanceQuantity;
   }
   public void setId(int id) {
     this.id = id;

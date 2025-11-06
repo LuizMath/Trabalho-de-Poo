@@ -3,7 +3,6 @@ package com.construmax.Controllers;
 import com.construmax.DAO.EquipmentDAO;
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.Equipment;
-import com.construmax.Model.Equipment.Status;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,16 +20,20 @@ public class StockController {
   @FXML
   private TableColumn<Equipment, String> description;
   @FXML
-  private TableColumn<Equipment, Status> status;
-  @FXML
   private TableColumn<Equipment, Double> dailyValue;
+  @FXML
+  private TableColumn<Equipment, Integer> availableQuantity;
+  @FXML
+  private TableColumn<Equipment, Integer> maintenanceQuantity;
   @FXML
   private void equipmentsInTable () {
     name.setCellValueFactory(new PropertyValueFactory<>("name"));
     type.setCellValueFactory(new PropertyValueFactory<>("type"));
     description.setCellValueFactory(new PropertyValueFactory<>("description"));
-    status.setCellValueFactory(new PropertyValueFactory<>("status"));
     dailyValue.setCellValueFactory(new PropertyValueFactory<>("dailyValue"));
+    availableQuantity.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+    maintenanceQuantity.setCellValueFactory(new PropertyValueFactory<>("maintenanceQuantity"));
+
     EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
     ObservableList<Equipment> equipments = equipmentDAO.getAllEquipments();
     tableEquipments.setItems(equipments);

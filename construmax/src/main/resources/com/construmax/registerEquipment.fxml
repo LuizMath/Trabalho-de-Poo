@@ -21,6 +21,8 @@
                         <TextField styleClass="input-primary" fx:id="type" focusTraversable="false" promptText="equipment type"/>
                         <Label style="-fx-font-size: 16px" text="Descrição do Equipamento" />
                         <TextField styleClass="input-primary" fx:id="description" focusTraversable="false" promptText="description equipment"/>
+                        <Label style="-fx-font-size: 16px" text="Quantidade do Equipamento" />
+                        <TextField styleClass="input-primary" fx:id="quantity" focusTraversable="false" promptText="quantity equipment"/>
                         <Label style="-fx-font-size: 16px" text="Valor Diária" />
                         <TextField styleClass="input-primary" fx:id="dailyValue" focusTraversable="false" promptText="day value"/>
                         <Button text="Enviar" fx:id="submit" styleClass="submit-button" maxWidth="Infinity">

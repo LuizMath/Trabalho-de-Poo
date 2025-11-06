@@ -14,6 +14,8 @@
                 <TableColumn fx:id="type" text="Tipo" prefWidth="200"/>
                 <TableColumn fx:id="description" text="Descrição" prefWidth="200"/>
                 <TableColumn fx:id="status" text="Estado" prefWidth="200"/>
+                <TableColumn fx:id="availableQuantity" text="Quantidade Disponível" prefWidth="200"/>
+                <TableColumn fx:id="maintenanceQuantity" text="Quantidade em Manutenção" prefWidth="200"/>
                 <TableColumn fx:id="dailyValue" text="Valor Diária" prefWidth="200"/>
             </columns>
         </TableView>
