@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Date;
 
 import com.construmax.Model.ContractLocation;
-import com.construmax.Model.Equipment.Status;
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Utils.Toast;
 
@@ -32,7 +31,7 @@ public class ContractRentalDAO {
             stmtContract.executeUpdate();
             ResultSet rs = stmtContract.getGeneratedKeys();
             System.out.println(rs);
-            if (rs.next()) {
+            /*if (rs.next()) {
                 contract.setId(rs.getInt(1));
                 EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
                 boolean statusUpdated = equipmentDAO.updateEquipmentStatus(
@@ -42,7 +41,7 @@ public class ContractRentalDAO {
                 if (statusUpdated) {
                     success = true;
                 }
-            }
+            }*/
             if (success) {
                 Toast.showToastSucess("Contrato de Locação Criado!");
             }

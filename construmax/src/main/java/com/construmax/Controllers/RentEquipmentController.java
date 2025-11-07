@@ -7,6 +7,7 @@ import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.ContractLocation;
 import com.construmax.Model.Equipment;
 import com.construmax.Model.Session;
+import com.construmax.Model.Stock;
 import com.construmax.Model.User;
 import com.construmax.Utils.Toast;
 
@@ -30,13 +31,14 @@ public class RentEquipmentController {
     @FXML private DatePicker startDatePicker;
     @FXML private DatePicker endDatePicker;
     @FXML private Label totalValueLabel;
-    @FXML private TableView<Equipment> equipmentTable;
-    @FXML private TableColumn<Equipment, Boolean> colSelect;
-    @FXML private TableColumn<Equipment, String> colName;
-    @FXML private TableColumn<Equipment, String> colType;
-    @FXML private TableColumn<Equipment, Double> colDailyValue;
+    @FXML private TableView<Stock> equipmentTable;
+    @FXML private TableColumn<Stock, Boolean> colSelect;
+    @FXML private TableColumn<Stock, String> colName;
+    @FXML private TableColumn<Stock, String> colType;
+    @FXML private TableColumn<Stock, Integer> availableQuantity;
+    @FXML private TableColumn<Stock, Double> colDailyValue;
 
-    private ObservableList<Equipment> availableEquipments;
+    private ObservableList<Stock> availableEquipments;
 
     @FXML
     private void mountEquipmentsTable () {
@@ -44,6 +46,7 @@ public class RentEquipmentController {
         colSelect.setCellFactory(CheckBoxTableCell.forTableColumn(colSelect));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        availableQuantity.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
         colDailyValue.setCellValueFactory(new PropertyValueFactory<>("dailyValue"));
         loadAvailableEquipments();
         availableEquipments.forEach(eq ->

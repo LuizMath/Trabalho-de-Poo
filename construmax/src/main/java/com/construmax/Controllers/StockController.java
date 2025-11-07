@@ -2,7 +2,7 @@ package com.construmax.Controllers;
 
 import com.construmax.DAO.EquipmentDAO;
 import com.construmax.Database.DatabaseConnection;
-import com.construmax.Model.Equipment;
+import com.construmax.Model.Stock;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,19 +12,21 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class StockController {
   @FXML
-  private TableView<Equipment> tableEquipments;
+  private TableView<Stock> tableEquipments;
   @FXML
-  private TableColumn<Equipment, String> name;
+  private TableColumn<Stock, String> name;
   @FXML
-  private TableColumn<Equipment, String> type;
+  private TableColumn<Stock, String> type;
   @FXML
-  private TableColumn<Equipment, String> description;
+  private TableColumn<Stock, String> description;
   @FXML
-  private TableColumn<Equipment, Double> dailyValue;
+  private TableColumn<Stock, Double> dailyValue;
   @FXML
-  private TableColumn<Equipment, Integer> availableQuantity;
+  private TableColumn<Stock, Integer> availableQuantity;
   @FXML
-  private TableColumn<Equipment, Integer> maintenanceQuantity;
+  private TableColumn<Stock, Integer> maintenanceQuantity;
+  @FXML
+  private TableColumn<Stock, Integer> inUseQuantity;
   @FXML
   private void equipmentsInTable () {
     name.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -33,9 +35,11 @@ public class StockController {
     dailyValue.setCellValueFactory(new PropertyValueFactory<>("dailyValue"));
     availableQuantity.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
     maintenanceQuantity.setCellValueFactory(new PropertyValueFactory<>("maintenanceQuantity"));
+    inUseQuantity.setCellValueFactory(new PropertyValueFactory<>("inUseQuantity"));
+
 
     EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
-    ObservableList<Equipment> equipments = equipmentDAO.getAllEquipments();
+    ObservableList<Stock> equipments = equipmentDAO.getAllEquipments();
     tableEquipments.setItems(equipments);
   }
   @FXML

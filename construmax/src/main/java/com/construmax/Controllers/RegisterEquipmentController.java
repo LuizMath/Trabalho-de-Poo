@@ -6,7 +6,6 @@ import javafx.event.EventHandler;
 import com.construmax.DAO.EquipmentDAO;
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.Equipment;
-import com.construmax.Model.Equipment.Status;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

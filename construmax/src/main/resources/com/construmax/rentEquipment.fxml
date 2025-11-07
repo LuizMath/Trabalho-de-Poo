@@ -21,9 +21,10 @@
                     <Label style="-fx-font-size: 16px" text="2. Seleção de Equipamentos Disponíveis" />
                     <TableView fx:id="equipmentTable" prefHeight="200" editable="true">
                         <columns>
-                            <TableColumn fx:id="colSelect" text="Sel." prefWidth="50"/>
+                            <TableColumn fx:id="colQtd" text="Qtd." prefWidth="50"/>
                             <TableColumn fx:id="colName" text="Nome" prefWidth="150"/>
                             <TableColumn fx:id="colType" text="Tipo" prefWidth="150"/>
+                            <TableColumn fx:id="availableQuantity" text="Quantidade Disponível" prefWidth="150"/>
                             <TableColumn fx:id="colDailyValue" text="Diária (R$)" prefWidth="100"/>
                         </columns>
                     </TableView>

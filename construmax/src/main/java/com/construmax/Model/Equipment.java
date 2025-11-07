@@ -4,21 +4,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.BooleanProperty;
 
 public class Equipment {
-  public Equipment(int id, String name, String type, String description, Double dailyValue) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.description = description;
-        this.dailyValue = dailyValue;
+  public Equipment(String name, String type, String description, Double dailyValue, int quantity) {
+      this.name = name;
+      this.type = type;
+      this.description = description;
+      this.dailyValue = dailyValue;
+      this.quantity = quantity;
   }
-  public Equipment ( String name, String type, String description, Double dailyValue, int quantity) {
-    this.name = name;
-    this.type = type;
-    this.description = description;
-    this.dailyValue = dailyValue;
-    this.quantity = quantity;
-  }
-  private int id;
+  
   private String name;
   private int availableQuantity;
   private int maintenanceQuantity;
@@ -48,9 +41,6 @@ public class Equipment {
   public Double getDailyValue () {
     return this.dailyValue;
   }
-  public int getId() {
-    return this.id;
-  }
   public int getAvailableQuantity () {
     return this.availableQuantity;
   }
@@ -62,8 +52,5 @@ public class Equipment {
   }
   public void setMaintenanceQuantity (int maintenanceQuantity) {
     this.maintenanceQuantity = maintenanceQuantity;
-  }
-  public void setId(int id) {
-    this.id = id;
   }
 }
