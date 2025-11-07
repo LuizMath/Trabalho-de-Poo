@@ -4,6 +4,11 @@ module com.construmax {
     requires javafx.base;
     requires javafx.fxml;
     requires java.sql;
+    requires java.desktop;
+    requires kernel;
+    requires io;
+    requires forms;
+    requires layout;
     requires spring.security.crypto;
     requires org.controlsfx.controls;
     requires org.kordamp.ikonli.core;

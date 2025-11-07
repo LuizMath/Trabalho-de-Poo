@@ -2,19 +2,23 @@ package com.construmax.Controllers;
 
 import com.construmax.DAO.ContractRentalDAO;
 import com.construmax.DAO.EquipmentDAO;
-import com.construmax.DAO.UserDAO;
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.ContractLocation;
 import com.construmax.Model.Equipment;
 import com.construmax.Model.Session;
 import com.construmax.Model.Stock;
-import com.construmax.Model.User;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+
 import com.construmax.Utils.Toast;
+import javafx.util.converter.IntegerStringConverter;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.cell.CheckBoxTableCell;
 
 import java.sql.SQLException;
@@ -33,6 +37,7 @@ public class RentEquipmentController {
     @FXML private Label totalValueLabel;
     @FXML private TableView<Stock> equipmentTable;
     @FXML private TableColumn<Stock, Boolean> colSelect;
+    @FXML private TableColumn<Stock, Integer> colQtd;
     @FXML private TableColumn<Stock, String> colName;
     @FXML private TableColumn<Stock, String> colType;
     @FXML private TableColumn<Stock, Integer> availableQuantity;
@@ -48,6 +53,25 @@ public class RentEquipmentController {
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
         availableQuantity.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
         colDailyValue.setCellValueFactory(new PropertyValueFactory<>("dailyValue"));
+        colQtd.setCellValueFactory(new PropertyValueFactory<>("rentedQuantity"));
+        colQtd.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        colQtd.setOnEditCommit(event -> {
+            Stock stock = event.getRowValue();
+            int newValue = event.getNewValue();
+            if (newValue < 1) {
+                Toast.showToastError("A quantidade deve ser pelo menos 1!");
+                equipmentTable.refresh();
+                return;
+            }
+            if (newValue > stock.getAvailableQuantity()) {
+                Toast.showToastError("Quantidade indisponível no estoque!");
+                equipmentTable.refresh();
+                return;
+            }
+            stock.setRentedQuantity(newValue);
+            stock.setSelected(newValue > 0);
+            calculateTotal();
+        });
         loadAvailableEquipments();
         availableEquipments.forEach(eq ->
             eq.selectedProperty().addListener((obs, oldV, newV) -> calculateTotal())
@@ -74,8 +98,8 @@ public class RentEquipmentController {
             return;
         }
 
-        List<Equipment> selectedEquipments = availableEquipments.stream()
-            .filter(Equipment::isSelected)
+        List<Stock> selectedEquipments = availableEquipments.stream()
+            .filter(st -> st.isSelected() && st.getRentedQuantity() > 0)
             .collect(Collectors.toList());
 
         if (selectedEquipments.isEmpty()) {
@@ -84,7 +108,7 @@ public class RentEquipmentController {
         }
 
         long days = ChronoUnit.DAYS.between(start, end) + 1;
-        double dailyTotal = selectedEquipments.stream().mapToDouble(Equipment::getDailyValue).sum();
+        double dailyTotal = selectedEquipments.stream().mapToDouble(st -> st.getDailyValue() * st.getRentedQuantity()).sum();
         double grossValue = dailyTotal * days;
 
         totalValueLabel.setText(String.format("Valor Total Bruto: R$ %.2f", grossValue));

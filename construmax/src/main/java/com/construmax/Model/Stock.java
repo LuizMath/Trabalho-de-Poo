@@ -4,7 +4,7 @@ public class Stock extends Equipment {
     private int availableQuantity;
     private int maintenanceQuantity;
     private int inUseQuantity;
-    
+    private int rentedQuantity = 0;
     public Stock (String name, String type, String description, Double dailyValue, int quantity, int availableQuantity, int maintenanceQuantity, int inUseQuantity) {
         super(name, type, description, dailyValue, quantity);
         this.availableQuantity = availableQuantity;
@@ -12,12 +12,18 @@ public class Stock extends Equipment {
         this.inUseQuantity = inUseQuantity;
     }
      public int getAvailableQuantity() {
-        return availableQuantity;
+        return this.availableQuantity;
     }
     public int getMaintenanceQuantity() {
-        return maintenanceQuantity;
+        return this.maintenanceQuantity;
     }
     public int getInUseQuantity() {
-        return inUseQuantity;
+        return this.inUseQuantity;
+    }
+    public int getRentedQuantity() {
+        return this.rentedQuantity;
+    }
+    public void setRentedQuantity(int rentedQuantity) {
+        this.rentedQuantity = rentedQuantity;
     }
 }
