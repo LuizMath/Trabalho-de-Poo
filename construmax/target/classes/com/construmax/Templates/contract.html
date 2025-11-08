@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contrato de Locação - Construmax</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 50px;
+        color: #333;
+        line-height: 1.6;
+      }
+      header {
+        text-align: center;
+        border-bottom: 2px solid #444;
+        margin-bottom: 30px;
+        padding-bottom: 10px;
+      }
+      h1 {
+        font-size: 20px;
+        margin-bottom: 5px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      th,
+      td {
+        border: 1px solid #999;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f4f4f4;
+      }
+      footer {
+        text-align: center;
+        margin-top: 50px;
+      }
+      .assinatura {
+        margin-top: 40px;
+      }
+      .assinatura p {
+        margin: 60px 0 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>CONTRATO DE LOCAÇÃO DE EQUIPAMENTOS DE CONSTRUÇÃO</h1>
+      <p>
+        <strong>Construmax Equipamentos de Construção Ltda.</strong><br />
+        CNPJ: 00.000.000/0001-00 — Teresina–PI
+      </p>
+    </header>
+
+    <p>
+      <strong>LOCATÁRIO:</strong> {{cliente_nome}} — CPF: {{cliente_cpf}} —
+      Telefone: {{cliente_telefone}}
+    </p>
+
+    <h3>Cláusula 1 – Objeto</h3>
+    <p>
+      O presente contrato tem por objeto a locação dos equipamentos descritos
+      abaixo, de propriedade da LOCADORA.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Equipamento</th>
+          <th>Tipo</th>
+          <th>Valor Diário (R$)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{equipamentos}}
+      </tbody>
+    </table>
+
+    <h3>Cláusula 2 – Prazo de Locação</h3>
+    <p>
+      A locação terá início em {{data_inicio}} e término em {{data_fim}},
+      podendo ser renovada mediante solicitação prévia e aprovação da LOCADORA.
+    </p>
+
+    <h3>Cláusula 3 – Valor e Pagamento</h3>
+    <p>
+      O valor bruto é de R$ {{valor_bruto}}, e o líquido, após descontos, é de
+      R$ {{valor_liquido}}. O pagamento deverá ser efetuado até
+      {{data_pagamento}}.
+    </p>
+
+    <h3>Cláusula 4 – Obrigações do Locatário</h3>
+    <p>
+      O LOCATÁRIO compromete-se a utilizar o equipamento adequadamente, zelar
+      pela conservação e devolvê-lo em boas condições.
+    </p>
+
+    <h3>Cláusula 5 – Devolução e Taxas</h3>
+    <p>
+      Atrasos implicarão multa diária de 5% sobre o valor total da locação.
+      Danos implicam custos de reparo.
+    </p>
+
+    <h3>Cláusula 6 – Manutenção e Garantia</h3>
+    <p>
+      A LOCADORA se compromete com manutenções preventivas e corretivas em seus
+      equipamentos.
+    </p>
+
+    <h3>Cláusula 7 – Rescisão</h3>
+    <p>
+      O contrato pode ser rescindido por qualquer parte com aviso prévio de 48
+      horas.
+    </p>
+
+    <h3>Cláusula 8 – Foro</h3>
+    <p>
+      Fica eleito o foro de Teresina – PI para dirimir quaisquer dúvidas
+      oriundas deste contrato.
+    </p>
+
+    <p><em>Teresina, {{data_atual}}</em></p>
+
+    <div class="assinatura">
+      <p>
+        _________________________________________<br />
+        LOCADORA: Construmax Equipamentos de Construção Ltda.
+      </p>
+
+      <p>
+        _________________________________________<br />
+        LOCATÁRIO: {{cliente_nome}}
+      </p>
+    </div>
+
+    <footer>
+      <small>Documento gerado automaticamente pelo sistema Construmax.</small>
+    </footer>
+  </body>
+</html>

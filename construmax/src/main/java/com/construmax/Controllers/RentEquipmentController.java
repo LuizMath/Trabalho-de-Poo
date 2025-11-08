@@ -11,6 +11,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
+import com.construmax.Utils.GenerateContract;
 import com.construmax.Utils.Toast;
 import javafx.util.converter.IntegerStringConverter;
 
@@ -117,8 +118,8 @@ public class RentEquipmentController {
     private void createContract() {
         LocalDate start = startDatePicker.getValue();
         LocalDate end = endDatePicker.getValue();
-        List<Equipment> selectedEquipments = availableEquipments.stream()
-            .filter(Equipment::isSelected)
+        List<Stock> selectedEquipments = availableEquipments.stream()
+            .filter(Stock::isSelected)
             .collect(Collectors.toList());
         if (selectedEquipments.isEmpty()) {
             Toast.showToastError("Selecione pelo menos um equipamento.");
@@ -135,8 +136,9 @@ public class RentEquipmentController {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        GenerateContract.generateContract(contract);
         Toast.showToastSucess("Contrato de locação criado com sucesso!");
-        for (Equipment eq : selectedEquipments) {
+        for (Stock eq : selectedEquipments) {
             eq.setSelected(false);
         }
         equipmentTable.refresh();

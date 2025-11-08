@@ -9,6 +9,7 @@ module com.construmax {
     requires io;
     requires forms;
     requires layout;
+    requires html2pdf;
     requires spring.security.crypto;
     requires org.controlsfx.controls;
     requires org.kordamp.ikonli.core;

@@ -7,7 +7,7 @@ import java.util.List;
 public class ContractLocation {
     private int id;
     private User client;
-    private List<Equipment> rentedEquipments;
+    private List<Stock> rentedEquipments;
     private LocalDate startDate;
     private LocalDate expectedReturnDate;
     private double dailyValueTotal;
@@ -16,7 +16,7 @@ public class ContractLocation {
     private String status;
     private static final double VIP_DISCOUNT = 0.10;
 
-    public ContractLocation(User client, List<Equipment> rentedEquipments, LocalDate startDate, LocalDate expectedReturnDate ) {
+    public ContractLocation(User client, List<Stock> rentedEquipments, LocalDate startDate, LocalDate expectedReturnDate ) {
         this.client = client;
         this.rentedEquipments = rentedEquipments;
         this.startDate = startDate;
@@ -28,12 +28,9 @@ public class ContractLocation {
     }
     public void calculateTotalContractValue() {
         long days = ChronoUnit.DAYS.between(startDate, expectedReturnDate) + 1;
-        double grossValue = dailyValueTotal * days;
-        if (client.isVIP()) {
-            this.totalContractValue = grossValue * (1.0 - VIP_DISCOUNT);
-        } else {
-            this.totalContractValue = grossValue;
-        }
+        double dailyTotal = rentedEquipments.stream().mapToDouble(st -> st.getDailyValue() * st.getRentedQuantity()).sum();
+        double grossValue = dailyTotal * days;
+        this.totalContractValue = grossValue;
     }
     public void renovarContrato(int daysAdditional) {
         this.expectedReturnDate = this.expectedReturnDate.plusDays(daysAdditional);
@@ -42,7 +39,7 @@ public class ContractLocation {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public User getClient() { return this.client; }
-    public List<Equipment> getRentedEquipments() { return this.rentedEquipments; }
+    public List<Stock> getRentedEquipments() { return this.rentedEquipments; }
     public LocalDate getStartDate() { return this.startDate; }
     public LocalDate getExpectedReturnDate() { return this.expectedReturnDate; }
     public double getTotalContractValue() { return this.totalContractValue; }
