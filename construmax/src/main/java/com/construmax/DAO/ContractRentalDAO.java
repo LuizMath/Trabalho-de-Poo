@@ -30,18 +30,13 @@ public class ContractRentalDAO {
             stmtContract.setString(5, contract.getStatus());
             stmtContract.executeUpdate();
             ResultSet rs = stmtContract.getGeneratedKeys();
-            System.out.println(rs);
-            /*if (rs.next()) {
+            if (rs.next()) {
                 contract.setId(rs.getInt(1));
-                EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
-                boolean statusUpdated = equipmentDAO.updateEquipmentStatus(
-                    contract.getRentedEquipments(),
-                    Status.RENTED
-                );
-                if (statusUpdated) {
-                    success = true;
-                }
-            }*/
+                EquipmentDAO equipmentDAO = new EquipmentDAO(connection);
+                for (int i = 0; i < contract.getRentedEquipments().size(); i++) {
+                    equipmentDAO.insertEquipmentsInItemContract(contract.getRentedEquipments().get(i).getRentedQuantity(), contract.getId(), contract.getRentedEquipments().get(i).getId());
+                };
+            }
             if (success) {
                 Toast.showToastSucess("Contrato de Locação Criado!");
             }

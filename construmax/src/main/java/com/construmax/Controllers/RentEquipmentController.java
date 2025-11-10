@@ -138,8 +138,14 @@ public class RentEquipmentController {
         }
         GenerateContract.generateContract(contract);
         Toast.showToastSucess("Contrato de locação criado com sucesso!");
+        for (int i = 0; i < selectedEquipments.size(); i++) {
+            EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
+            equipmentDAO.updateStockQuantity(selectedEquipments.get(i).getRentedQuantity(), selectedEquipments.get(i).getId(), selectedEquipments.get(i).getAvailableQuantity(), selectedEquipments.get(i).getInUseQuantity());
+        }
         for (Stock eq : selectedEquipments) {
             eq.setSelected(false);
+            eq.setRentedQuantity(0);
+
         }
         equipmentTable.refresh();
         totalValueLabel.setText("Valor Total (Bruto/Líquido): R$ 0,00");

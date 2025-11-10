@@ -34,7 +34,7 @@ public class GenerateContract {
             String folderPath = userHome + File.separator + "Documents" + File.separator + "Contratos";
             StringBuilder stockHtml = new StringBuilder();
             contractLocation.getRentedEquipments().forEach(stock -> {
-                stockHtml.append("<tr>").append("<td>").append(stock.getName()).append("</td>").append("<td>").append(stock.getType()).append("</td>").append("<td>").append(String.format("R$ %.2f", stock.getDailyValue())).append("</td>").append("</tr>");
+                stockHtml.append("<tr>").append("<td>").append(stock.getRentedQuantity()).append("</td>").append("<td>").append(stock.getName()).append("</td>").append("<td>").append(stock.getType()).append("</td>").append("<td>").append(String.format("R$ %.2f", stock.getDailyValue())).append("</td>").append("</tr>");
             });
             html = html.replace("{{equipamentos}}", stockHtml.toString());
             new File(folderPath).mkdirs();

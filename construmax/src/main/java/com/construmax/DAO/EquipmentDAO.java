@@ -8,7 +8,6 @@ import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.Equipment;
 import com.construmax.Model.Stock;
 import com.construmax.Utils.Toast;
-import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,7 +31,7 @@ public class EquipmentDAO {
         System.out.println("Erro ao atualizar status do equipamento: " + ex.getMessage());
         return false;
     }
-}*/
+  }*/
   public boolean insertEquipment (Equipment equipment) {
     String sqlStatement = "insert into Equipments (name, type, description, daily_value, quantity) values (?, ?, ?, ?, ?)";
     try {
@@ -52,6 +51,19 @@ public class EquipmentDAO {
       return false;
     }
   }
+  public void updateStockQuantity (int quantityRented, int id, int available_quantity, int in_use_quantity) {
+    String sqlStatement = "update Stock set available_quantity = ?, in_use_quantity = ? where id_equipment = ?";
+    try {
+      PreparedStatement stmt = connection.prepareStatement(sqlStatement);
+      stmt.setInt(1, available_quantity - quantityRented);
+      stmt.setInt(2, in_use_quantity + quantityRented);
+      stmt.setInt(3, id);
+      stmt.executeUpdate();
+      DatabaseConnection.getDisconnect();
+    } catch (SQLException ex) {
+      System.out.println("Erro ao fazer update: " + ex.getMessage());
+    }
+  }
   public ObservableList<Stock> getAllEquipments() {
       ObservableList<Stock> equipments = FXCollections.observableArrayList();
       String sqlStatement = "SELECT Eq.name, Eq.type, Eq.quantity, Eq.description, Eq.daily_value, St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
@@ -67,17 +79,28 @@ public class EquipmentDAO {
       }
       return equipments;
   }
-    public ObservableList<Stock> getAvailableEquipments() {
+  public void insertEquipmentsInItemContract (int quantity, int idContract, int idEquipment) {
+    String sqlStatement = "insert into ItemContract (quantity, id_contract, id_equipament) values (?, ?, ?)";
+    try {
+      PreparedStatement stmt = connection.prepareStatement(sqlStatement);
+      stmt.setInt(1, quantity);
+      stmt.setInt(2, idContract);
+      stmt.setInt(3, idEquipment);
+      stmt.executeUpdate();
+    } catch (SQLException ex) {
+      System.out.println("Erro ao inserir item no contrato: " + ex.getMessage());
+    }
+  }
+  public ObservableList<Stock> getAvailableEquipments() {
     ObservableList<Stock> equipments = FXCollections.observableArrayList();
-    String sqlStatement = "SELECT Eq.name, Eq.type, Eq.quantity, Eq.description, Eq.daily_value, St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
-
+    String sqlStatement = "SELECT Eq.id, Eq.name, Eq.type, Eq.quantity, Eq.description, Eq.daily_value, St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
     try (PreparedStatement stmt = connection.prepareStatement(sqlStatement)) {
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
           if (rs.getInt("available_quantity") > 1) {
             Stock equipment = new Stock(rs.getString("name"), rs.getString("type"), rs.getString("description"), rs.getDouble("daily_value"), rs.getInt("total_quantity"), rs.getInt("available_quantity"), rs.getInt("maintenance_quantity"), rs.getInt("in_use_quantity"));
+            equipment.setId(rs.getInt("id"));
             equipments.add(equipment);
-            System.out.println(rs.getString("name"));
           }
        }
     } catch (SQLException ex) {

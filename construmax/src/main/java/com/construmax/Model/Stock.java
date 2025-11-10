@@ -1,6 +1,7 @@
 package com.construmax.Model;
 
 public class Stock extends Equipment {
+    private int id;
     private int availableQuantity;
     private int maintenanceQuantity;
     private int inUseQuantity;
@@ -16,6 +17,12 @@ public class Stock extends Equipment {
     }
     public int getMaintenanceQuantity() {
         return this.maintenanceQuantity;
+    }
+    public int getId () {
+        return this.id;
+    }
+    public void setId (int id) {
+        this.id = id;
     }
     public int getInUseQuantity() {
         return this.inUseQuantity;
