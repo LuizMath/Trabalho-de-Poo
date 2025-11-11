@@ -1,9 +1,13 @@
 .text-primary {
   -fx-font-size: 20px;
   -fx-font-weight: bold;
-  -fx-font-family: "Inter", sans-serif;
 }
 
-.table {
+.main-stock {
+  -fx-background-color: #fcfcfc;
+  -fx-effect: dropshadow(three-pass-box, rgba(149, 157, 165, 0.2), 8, 0, 0, 0);
+  -fx-padding: 50px;
+  -fx-background-radius: 10px;
   -fx-max-width: 1000px;
+  -fx-min-height: 500px;
 }

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Label?>
 
-<VBox alignment="center" spacing="20" xmlns:fx="http://javafx.com/fxml"> 
-    <Label text="Meus Contratos"></Label>
-</VBox>
+<StackPane xmlns:fx="http://javafx.com/fxml" stylesheets="@Styles/Contracts.css"> 
+    <VBox spacing="20" styleClass="main-form" alignment="top_center">
+        <children><Label text="Meus Contratos" styleClass="label-primary"></Label></children>    
+    </VBox>
+</StackPane>
