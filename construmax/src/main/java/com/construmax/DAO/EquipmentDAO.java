@@ -17,21 +17,6 @@ public class EquipmentDAO {
   public EquipmentDAO (Connection connection) {
     this.connection = connection;
   }
-  /*public boolean updateEquipmentStatus(List<Equipment> equipments, Status newStatus) {
-    String sqlUpdateEquip = "UPDATE Equipments SET state = ? WHERE id = ?";
-    try (PreparedStatement stmtUpdate = connection.prepareStatement(sqlUpdateEquip)) {
-        for (Equipment equip : equipments) {
-            stmtUpdate.setString(1, newStatus.getDescription());
-            stmtUpdate.setInt(2, equip.getId());
-            stmtUpdate.addBatch();
-        }
-        stmtUpdate.executeBatch();
-        return true;
-    } catch (SQLException ex) {
-        System.out.println("Erro ao atualizar status do equipamento: " + ex.getMessage());
-        return false;
-    }
-  }*/
   public boolean insertEquipment (Equipment equipment) {
     String sqlStatement = "insert into Equipments (name, type, description, daily_value, quantity) values (?, ?, ?, ?, ?)";
     try {
