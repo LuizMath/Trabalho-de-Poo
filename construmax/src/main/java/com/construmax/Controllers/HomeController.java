@@ -49,9 +49,11 @@ public class HomeController {
             }
             case "rentEquipment": {
               loadView("rentEquipment");
+              break;
             }
             case "userContracts": {
               loadView("contracts");
+              break;
             }
             default:
               break;
