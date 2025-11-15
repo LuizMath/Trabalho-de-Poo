@@ -1,9 +1,6 @@
 package com.construmax.Utils;
 import com.construmax.Model.ContractLocation;
-import com.itextpdf.forms.PdfAcroForm;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.PdfWriter;
+
 import com.itextpdf.html2pdf.HtmlConverter;
 import java.awt.Desktop;
 

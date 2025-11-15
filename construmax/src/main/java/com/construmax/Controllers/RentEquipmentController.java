@@ -4,12 +4,8 @@ import com.construmax.DAO.ContractRentalDAO;
 import com.construmax.DAO.EquipmentDAO;
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.ContractLocation;
-import com.construmax.Model.Equipment;
 import com.construmax.Model.Session;
 import com.construmax.Model.Stock;
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
 
 import com.construmax.Utils.GenerateContract;
 import com.construmax.Utils.Toast;
