@@ -69,13 +69,8 @@ public class HomeController {
       FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
       Node node = loader.load();
       contentVBox.getChildren().setAll(node);
-      if (fxml.equals("stock")) {
-        contentVBox.setAlignment(Pos.TOP_CENTER);
-        contentVBox.setPadding(new Insets(30, 0, 0, 0));
-      } else {
-        contentVBox.setAlignment(Pos.CENTER);
-        contentVBox.setPadding(new Insets(0, 0, 0, 0));
-      }
+      contentVBox.setAlignment(Pos.CENTER);
+      contentVBox.setPadding(new Insets(0, 0, 0, 0));
     } catch (Exception ex) {
       ex.printStackTrace();
     }

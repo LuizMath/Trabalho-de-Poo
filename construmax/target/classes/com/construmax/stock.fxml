@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TableColumn?>
 
 <StackPane stylesheets="@Styles/Stock.css" xmlns:fx="http://javafx.com/fxml" fx:controller="com.construmax.Controllers.StockController">
-    <VBox alignment="top_center" spacing="0" styleClass="main-stock">
+    <VBox alignment="top_center" spacing="40" styleClass="main-stock" >
         <children>
             <Label text="Estoque" styleClass="text-primary"/>
             <TableView styleClass="table" fx:id="tableEquipments">
