@@ -28,35 +28,23 @@ public class ContractsController {
     private TableColumn<ContractLocation, String> colStatus;
 
     @FXML
-    public void initialize() {
-        // 1. Configurar as colunas da tabela
-        // Os nomes ("id", "startDate", etc.) devem corresponder
-        // aos getters do seu modelo ContractLocation (ex: getId(), getStartDate())
-        
+    public void initialize () {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colStartDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         colEndDate.setCellValueFactory(new PropertyValueFactory<>("expectedReturnDate"));
         colTotalValue.setCellValueFactory(new PropertyValueFactory<>("totalContractValue"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-
-        // 2. Carregar os dados
         loadUserContracts();
     }
 
     private void loadUserContracts() {
-        // 3. Obter o usuário da sessão
         User currentUser = Session.getUser();
-        
         if (currentUser != null) {
-            // 4. Chamar o DAO para buscar os contratos
             ContractRentalDAO contractDAO = new ContractRentalDAO(DatabaseConnection.getConnection());
             ObservableList<ContractLocation> contracts = contractDAO.getContractsByUserId(currentUser.getId());
-            
-            // 5. Popular a tabela
             contractsTable.setItems(contracts);
         } else {
             System.err.println("Erro: Nenhum usuário logado para carregar contratos.");
-            // Opcional: mostrar uma mensagem na tela
         }
     }
 }
