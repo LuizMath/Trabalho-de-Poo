@@ -26,6 +26,13 @@ public class ContractLocation {
         this.dailyValueTotal = rentedEquipments.stream().mapToDouble(Equipment::getDailyValue).sum();
         calculateTotalContractValue();
     }
+    public ContractLocation(int id, LocalDate startDate, LocalDate expectedReturnDate, double totalContractValue, String status) {
+        this.id = id;
+        this.startDate = startDate;
+        this.expectedReturnDate = expectedReturnDate;
+        this.totalContractValue = totalContractValue;
+        this.status = status;
+    }
     public void calculateTotalContractValue() {
         long days = ChronoUnit.DAYS.between(startDate, expectedReturnDate) + 1;
         double dailyTotal = rentedEquipments.stream().mapToDouble(st -> st.getDailyValue() * st.getRentedQuantity()).sum();

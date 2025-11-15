@@ -7,6 +7,10 @@ import com.construmax.Model.ContractLocation;
 import com.construmax.Model.Session;
 import com.construmax.Model.Stock;
 
+import com.construmax.Model.User;
+import java.sql.SQLException;
+
+
 import com.construmax.Utils.GenerateContract;
 import com.construmax.Utils.Toast;
 import javafx.util.converter.IntegerStringConverter;
@@ -18,7 +22,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.cell.CheckBoxTableCell;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -82,9 +85,23 @@ public class RentEquipmentController {
         DatabaseConnection.getDisconnect();
     }
     private void loadClient () {
-        nameField.setText(Session.getUser().getName());
-        cpfField.setText(Session.getUser().getCPF());
+    // Pega o usuário UMA VEZ
+    User currentUser = Session.getUser(); 
+
+    // VERIFICA SE ELE EXISTE (NÃO É NULO)
+    if (currentUser != null) {
+        nameField.setText(currentUser.getName());
+        cpfField.setText(currentUser.getCPF());
+    } else {
+        // Opcional: informar que não há usuário
+        nameField.setText("N/A - Faça login");
+        cpfField.setText("N/A - Faça login");
+        
+        // Aqui você também poderia desabilitar o botão de criar contrato
+        // submitContractButton.setDisable(true); 
+        // (Você precisaria adicionar o @FXML para o submitContractButton)
     }
+}
     @FXML
     private void calculateTotal() {
         LocalDate start = startDatePicker.getValue();
@@ -112,11 +129,13 @@ public class RentEquipmentController {
     }
     @FXML
     private void createContract() {
+        // 1. OBTER VALORES E VALIDAR (Isto já estava correto)
         LocalDate start = startDatePicker.getValue();
         LocalDate end = endDatePicker.getValue();
         List<Stock> selectedEquipments = availableEquipments.stream()
             .filter(Stock::isSelected)
             .collect(Collectors.toList());
+
         if (selectedEquipments.isEmpty()) {
             Toast.showToastError("Selecione pelo menos um equipamento.");
             return;
@@ -125,28 +144,47 @@ public class RentEquipmentController {
             Toast.showToastError("Verifique as datas de locação.");
             return;
         }
+
+        // 2. PREPARAR OBJETOS
         ContractLocation contract = new ContractLocation(Session.getUser(), selectedEquipments, start, end);
         ContractRentalDAO contractRentalDAO = new ContractRentalDAO(DatabaseConnection.getConnection());
+
+        // 3. EXECUTAR A TRANSAÇÃO (AQUI ESTÁ A MUDANÇA)
         try {
+            // TENTATIVA DE SALVAR NO BANCO
             contractRentalDAO.insertContract(contract);
+
+            // SE CHEGOU AQUI, O BANCO DE DADOS ACEITOU O CONTRATO
+            // AGORA, FAÇA TODAS AS OUTRAS COISAS DE SUCESSO:
+            
+            // 3.1. GERAR PDF
+            GenerateContract.generateContract(contract);
+
+            // 3.2. ATUALIZAR ESTOQUE NO BANCO (UM POR UM)
+            for (int i = 0; i < selectedEquipments.size(); i++) {
+                EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
+                equipmentDAO.updateStockQuantity(selectedEquipments.get(i).getRentedQuantity(), selectedEquipments.get(i).getId(), selectedEquipments.get(i).getAvailableQuantity(), selectedEquipments.get(i).getInUseQuantity());
+            }
+
+            // 3.3. LIMPAR A TELA
+            for (Stock eq : selectedEquipments) {
+                eq.setSelected(false);
+                eq.setRentedQuantity(0);
+            }
+            equipmentTable.refresh();
+            totalValueLabel.setText("Valor Total (Bruto/Líquido): R$ 0,00");
+
+            // 3.4. MOSTRAR SUCESSO (SÓ NO FINAL)
+            Toast.showToastSucess("Contrato de locação criado com sucesso!");
+
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            // SE O insertContract() OU QUALQUER OUTRA OPERAÇÃO DE BANCO FALHAR,
+            // O CÓDIGO PULA DIRETAMENTE PARA CÁ E PARA.
+            Toast.showToastError("Erro ao salvar contrato: " + ex.getMessage());
+            ex.printStackTrace(); // Para você ver o erro no console
         }
-        GenerateContract.generateContract(contract);
-        Toast.showToastSucess("Contrato de locação criado com sucesso!");
-        for (int i = 0; i < selectedEquipments.size(); i++) {
-            EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
-            equipmentDAO.updateStockQuantity(selectedEquipments.get(i).getRentedQuantity(), selectedEquipments.get(i).getId(), selectedEquipments.get(i).getAvailableQuantity(), selectedEquipments.get(i).getInUseQuantity());
-        }
-        for (Stock eq : selectedEquipments) {
-            eq.setSelected(false);
-            eq.setRentedQuantity(0);
-
-        }
-        equipmentTable.refresh();
-        totalValueLabel.setText("Valor Total (Bruto/Líquido): R$ 0,00");
+        // NADA MAIS DEVE FICAR AQUI FORA DO TRY/CATCH
     }
-
     @FXML
     public void initialize() {
         mountEquipmentsTable();

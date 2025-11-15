@@ -36,19 +36,24 @@ public class EquipmentDAO {
       return false;
     }
   }
-  public void updateStockQuantity (int quantityRented, int id, int available_quantity, int in_use_quantity) {
+  // Em: EquipmentDAO.java
+
+// Adicione "throws SQLException" na assinatura
+public void updateStockQuantity (int quantityRented, int id, int available_quantity, int in_use_quantity) throws SQLException {
     String sqlStatement = "update Stock set available_quantity = ?, in_use_quantity = ? where id_equipment = ?";
     try {
-      PreparedStatement stmt = connection.prepareStatement(sqlStatement);
-      stmt.setInt(1, available_quantity - quantityRented);
-      stmt.setInt(2, in_use_quantity + quantityRented);
-      stmt.setInt(3, id);
-      stmt.executeUpdate();
-      DatabaseConnection.getDisconnect();
+        PreparedStatement stmt = connection.prepareStatement(sqlStatement);
+        stmt.setInt(1, available_quantity - quantityRented);
+        stmt.setInt(2, in_use_quantity + quantityRented);
+        stmt.setInt(3, id);
+        stmt.executeUpdate();
+        DatabaseConnection.getDisconnect();
     } catch (SQLException ex) {
-      System.out.println("Erro ao fazer update: " + ex.getMessage());
+        System.out.println("Erro ao fazer update: " + ex.getMessage());
+        // AGORA NÓS LANÇAMOS O ERRO
+        throw ex;
     }
-  }
+}
   public ObservableList<Stock> getAllEquipments() {
       ObservableList<Stock> equipments = FXCollections.observableArrayList();
       String sqlStatement = "SELECT Eq.name, Eq.type, Eq.quantity, Eq.description, Eq.daily_value, St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
@@ -64,18 +69,23 @@ public class EquipmentDAO {
       }
       return equipments;
   }
-  public void insertEquipmentsInItemContract (int quantity, int idContract, int idEquipment) {
+  // Em: EquipmentDAO.java
+
+// Adicione "throws SQLException" na assinatura
+public void insertEquipmentsInItemContract (int quantity, int idContract, int idEquipment) throws SQLException {
     String sqlStatement = "insert into ItemContract (quantity, id_contract, id_equipament) values (?, ?, ?)";
     try {
-      PreparedStatement stmt = connection.prepareStatement(sqlStatement);
-      stmt.setInt(1, quantity);
-      stmt.setInt(2, idContract);
-      stmt.setInt(3, idEquipment);
-      stmt.executeUpdate();
+        PreparedStatement stmt = connection.prepareStatement(sqlStatement);
+        stmt.setInt(1, quantity);
+        stmt.setInt(2, idContract);
+        stmt.setInt(3, idEquipment);
+        stmt.executeUpdate();
     } catch (SQLException ex) {
-      System.out.println("Erro ao inserir item no contrato: " + ex.getMessage());
+        System.out.println("Erro ao inserir item no contrato: " + ex.getMessage());
+        // AGORA NÓS LANÇAMOS O ERRO PARA O DAO DE CONTRATO SABER
+        throw ex; 
     }
-  }
+}
   public ObservableList<Stock> getAvailableEquipments() {
     ObservableList<Stock> equipments = FXCollections.observableArrayList();
     String sqlStatement = "SELECT Eq.id, Eq.name, Eq.type, Eq.quantity, Eq.description, Eq.daily_value, St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";

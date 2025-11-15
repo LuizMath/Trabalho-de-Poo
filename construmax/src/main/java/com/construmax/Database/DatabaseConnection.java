@@ -21,7 +21,7 @@ public class DatabaseConnection {
             return connection;
         } catch (SQLException e) {
             System.out.println("Erro ao conectar: " + e.getMessage());
-            return null;
+            return connection;
         }
     }
     public static void getDisconnect () {
