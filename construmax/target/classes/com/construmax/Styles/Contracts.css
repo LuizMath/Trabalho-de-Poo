@@ -1,5 +1,5 @@
-.main-form {
-  -fx-max-width: 600px;
+.main-contracts {
+  -fx-max-width: 810px;
   -fx-min-height: 500px;
   -fx-background-color: #fcfcfc;
   -fx-effect: dropshadow(three-pass-box, rgba(149, 157, 165, 0.2), 8, 0, 0, 0);

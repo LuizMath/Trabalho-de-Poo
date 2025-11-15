@@ -72,13 +72,13 @@ public boolean insertContract(ContractLocation contract) throws SQLException {
                 double totalValue = rs.getDouble("total_value");
                 String status = rs.getString("status");
 
-                // Usamos o novo construtor que criamos no Passo 1
+                
                 contracts.add(new ContractLocation(id, startDate, endDate, totalValue, status));
             }
         } catch (SQLException ex) {
             System.out.println("Erro ao buscar contratos: " + ex.getMessage());
         } finally {
-             DatabaseConnection.getDisconnect(); // Seguindo seu padrão de fechar a conexão
+             DatabaseConnection.getDisconnect(); 
         }
         return contracts;
     }
