@@ -25,6 +25,8 @@ public class RegisterEquipmentController {
   @FXML
   private TextField quantity;
   @FXML
+  private TextField damageFee;
+  @FXML
   private Button submit;
 
   @FXML
@@ -38,7 +40,8 @@ public class RegisterEquipmentController {
             type.getText(),
             description.getText(),
             Double.parseDouble(dailyValue.getText()),
-            Integer.parseInt(quantity.getText())
+            Integer.parseInt(quantity.getText()),
+            Double.parseDouble(damageFee.getText())
         );
 
         boolean clearInputs = equipmentDAO.insertEquipment(equipment);
@@ -48,6 +51,7 @@ public class RegisterEquipmentController {
           quantity.setText("");
           description.setText("");
           dailyValue.setText("");
+          damageFee.setText("");
         }
       }
     });

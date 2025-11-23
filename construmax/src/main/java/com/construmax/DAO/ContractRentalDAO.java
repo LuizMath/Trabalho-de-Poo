@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import com.construmax.Model.ContractLocation;
+import com.construmax.Model.Equipment;
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Utils.Toast;
 
@@ -38,7 +39,7 @@ public class ContractRentalDAO {
                 contract.setId(rs.getInt(1));
                 EquipmentDAO equipmentDAO = new EquipmentDAO(connection);
                 for (int i = 0; i < contract.getRentedEquipments().size(); i++) {
-                    equipmentDAO.insertEquipmentsInItemContract(contract.getRentedEquipments().get(i).getRentedQuantity(), contract.getId(), contract.getRentedEquipments().get(i).getId());
+                    equipmentDAO.insertEquipmentsInItemContract(contract.getRentedEquipments().get(i).getRentedQuantity(), contract.getId(), contract.getRentedEquipments().get(i).getId(), contract.getRentedEquipments().get(i).getDailyValue());
                 };
                 success = true;
             }
@@ -75,6 +76,26 @@ public class ContractRentalDAO {
              DatabaseConnection.getDisconnect();
         }
         return contracts;
+    }
+    public ObservableList<Equipment> getEquipmentsByContractId (int id) {
+        ObservableList<Equipment> equipments = FXCollections.observableArrayList();
+        String sql = "select Ic.quantity, Ic.id_contract, Eq.name from ItemContract as Ic inner join Equipments as Eq on Ic.id_equipament = Eq.id";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                if (rs.getInt("id_contract") == id) {
+                    String name = rs.getString("name");
+                    int quantityRented = rs.getInt("quantity");
+                    equipments.add(new Equipment(name, quantityRented));
+                }
+            }
+            DatabaseConnection.getDisconnect();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        System.out.println(equipments);
+        return equipments;
     }
 }
 

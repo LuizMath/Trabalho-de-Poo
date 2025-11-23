@@ -18,7 +18,7 @@ public class EquipmentDAO {
     this.connection = connection;
   }
   public boolean insertEquipment (Equipment equipment) {
-    String sqlStatement = "insert into Equipments (name, type, description, daily_value, quantity) values (?, ?, ?, ?, ?)";
+    String sqlStatement = "insert into Equipments (name, type, description, daily_value, quantity, damage_fee) values (?, ?, ?, ?, ?, ?)";
     try {
       PreparedStatement stmt = connection.prepareStatement(sqlStatement);
       stmt.setString(1, equipment.getName());
@@ -26,6 +26,7 @@ public class EquipmentDAO {
       stmt.setString(3, equipment.getDescription());
       stmt.setDouble(4, equipment.getDailyValue());
       stmt.setInt(5, equipment.getQuantity());
+      stmt.setDouble(6, equipment.getDamageFee());
       stmt.executeUpdate();
       Toast.showToastSucess("Equipamento Cadastrado!");
       DatabaseConnection.getDisconnect();
@@ -56,12 +57,12 @@ public void updateStockQuantity (int quantityRented, int id, int available_quant
 }
   public ObservableList<Stock> getAllEquipments() {
       ObservableList<Stock> equipments = FXCollections.observableArrayList();
-      String sqlStatement = "SELECT Eq.name, Eq.type, Eq.quantity, Eq.description, Eq.daily_value, St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
+      String sqlStatement = "SELECT Eq.name, Eq.type, Eq.quantity, Eq.damage_fee Eq.description, Eq.daily_value, St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
       try {
         PreparedStatement stmt = connection.prepareStatement(sqlStatement);
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
-          Stock stockItem = new Stock(rs.getString("name"), rs.getString("type"), rs.getString("description"), rs.getDouble("daily_value"), rs.getInt("total_quantity"), rs.getInt("available_quantity"), rs.getInt("maintenance_quantity"), rs.getInt("in_use_quantity"));
+          Stock stockItem = new Stock(rs.getString("name"), rs.getString("type"), rs.getString("description"), rs.getDouble("daily_value"), rs.getDouble("damage_fee"), rs.getInt("total_quantity"), rs.getInt("available_quantity"), rs.getInt("maintenance_quantity"), rs.getInt("in_use_quantity"));
           equipments.add(stockItem);
         }
       } catch (SQLException ex) {
@@ -72,13 +73,14 @@ public void updateStockQuantity (int quantityRented, int id, int available_quant
   // Em: EquipmentDAO.java
 
 // Adicione "throws SQLException" na assinatura
-public void insertEquipmentsInItemContract (int quantity, int idContract, int idEquipment) throws SQLException {
-    String sqlStatement = "insert into ItemContract (quantity, id_contract, id_equipament) values (?, ?, ?)";
+public void insertEquipmentsInItemContract (int quantity, int idContract, int idEquipment, Double unitaryValue) throws SQLException {
+    String sqlStatement = "insert into ItemContract (quantity, id_contract, id_equipament, unitary_value) values (?, ?, ?, ?)";
     try {
         PreparedStatement stmt = connection.prepareStatement(sqlStatement);
         stmt.setInt(1, quantity);
         stmt.setInt(2, idContract);
         stmt.setInt(3, idEquipment);
+        stmt.setDouble(4, unitaryValue);
         stmt.executeUpdate();
     } catch (SQLException ex) {
         System.out.println("Erro ao inserir item no contrato: " + ex.getMessage());
@@ -88,12 +90,12 @@ public void insertEquipmentsInItemContract (int quantity, int idContract, int id
 }
   public ObservableList<Stock> getAvailableEquipments() {
     ObservableList<Stock> equipments = FXCollections.observableArrayList();
-    String sqlStatement = "SELECT Eq.id, Eq.name, Eq.type, Eq.quantity, Eq.description, Eq.daily_value, St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
+    String sqlStatement = "SELECT Eq.id, Eq.name, Eq.type, Eq.quantity, Eq.damage_fee, Eq.description, Eq.daily_value, St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
     try (PreparedStatement stmt = connection.prepareStatement(sqlStatement)) {
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
           if (rs.getInt("available_quantity") > 1) {
-            Stock equipment = new Stock(rs.getString("name"), rs.getString("type"), rs.getString("description"), rs.getDouble("daily_value"), rs.getInt("total_quantity"), rs.getInt("available_quantity"), rs.getInt("maintenance_quantity"), rs.getInt("in_use_quantity"));
+            Stock equipment = new Stock(rs.getString("name"), rs.getString("type"), rs.getString("description"), rs.getDouble("daily_value"), rs.getDouble("damage_fee"), rs.getInt("total_quantity"), rs.getInt("available_quantity"), rs.getInt("maintenance_quantity"), rs.getInt("in_use_quantity"));
             equipment.setId(rs.getInt("id"));
             equipments.add(equipment);
           }

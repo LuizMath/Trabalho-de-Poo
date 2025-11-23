@@ -6,8 +6,8 @@ public class Stock extends Equipment {
     private int maintenanceQuantity;
     private int inUseQuantity;
     private int rentedQuantity = 0;
-    public Stock (String name, String type, String description, Double dailyValue, int quantity, int availableQuantity, int maintenanceQuantity, int inUseQuantity) {
-        super(name, type, description, dailyValue, quantity);
+    public Stock (String name, String type, String description, Double dailyValue, Double damageFee,int quantity, int availableQuantity, int maintenanceQuantity, int inUseQuantity) {
+        super(name, type, description, dailyValue, quantity, damageFee);
         this.availableQuantity = availableQuantity;
         this.maintenanceQuantity = maintenanceQuantity;
         this.inUseQuantity = inUseQuantity;

@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 public class ContractLocation {
     private int id;
     private User client;
@@ -43,6 +46,10 @@ public class ContractLocation {
         this.expectedReturnDate = this.expectedReturnDate.plusDays(daysAdditional);
         calculateTotalContractValue();
     }
+    private BooleanProperty selected = new SimpleBooleanProperty(false);
+    public BooleanProperty selectedProperty() { return selected; }
+    public boolean isSelected() { return selected.get(); }
+    public void setSelected(boolean selected) { this.selected.set(selected); }
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public User getClient() { return this.client; }

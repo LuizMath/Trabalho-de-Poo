@@ -4,21 +4,26 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.BooleanProperty;
 
 public class Equipment {
-  public Equipment(String name, String type, String description, Double dailyValue, int quantity) {
+  public Equipment(String name, String type, String description, Double dailyValue, int quantity, Double damageFee) {
       this.name = name;
       this.type = type;
       this.description = description;
       this.dailyValue = dailyValue;
       this.quantity = quantity;
+      this.damageFee = damageFee;
   }
-  
+  public Equipment (String name, int quantity) {
+      this.name = name;
+      this.quantity = quantity;
+  }
   private String name;
   private int availableQuantity;
   private int maintenanceQuantity;
   private String type;
-  private String description;
+  private String description; 
   private int quantity;
   private Double dailyValue;
+  private Double damageFee;
   private BooleanProperty selected = new SimpleBooleanProperty(false);
 
   public BooleanProperty selectedProperty() { return selected; }
@@ -40,6 +45,9 @@ public class Equipment {
   }
   public Double getDailyValue () {
     return this.dailyValue;
+  }
+  public Double getDamageFee () {
+    return this.damageFee;
   }
   public int getAvailableQuantity () {
     return this.availableQuantity;

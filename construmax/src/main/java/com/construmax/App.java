@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.io.IOException;
-
 import com.construmax.Database.DatabaseConnection;
 
 public class App extends Application {
