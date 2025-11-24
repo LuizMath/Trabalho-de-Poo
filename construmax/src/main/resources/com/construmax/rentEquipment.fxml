@@ -4,117 +4,102 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<StackPane stylesheets="@Styles/RentEquipment.css" xmlns:fx="http://javafx.com/fxml" fx:controller="com.construmax.Controllers.RentEquipmentController">
+<StackPane stylesheets="@Styles/RentEquipment.css"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.construmax.Controllers.RentEquipmentController">
+
     <children>
         <VBox alignment="TOP_CENTER" spacing="20" styleClass="main-form" maxWidth="800">
+
             <children>
-                <Label text="Alugar Equipamento - Gestão de Contratos" styleClass="text-primary" />
+
+                <!-- Título -->
+                <Label text="Alugar Equipamento - Gestão de Contratos" styleClass="text-primary"/>
+
+                <!-- 1. Dados do Cliente -->
                 <VBox spacing="15">
-                    <Label style="-fx-font-size: 16px" text="1. Dados do Cliente (Locatário)" />
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <TextField styleClass="input-primary" fx:id="nameField" focusTraversable="false" disable="true" promptText="Nome"/>
-                        <TextField styleClass="input-primary" fx:id="cpfField" focusTraversable="false" disable="true" promptText="CPF"/>
-                    </HBox>
+                    <children>
+                        <Label style="-fx-font-size: 16px" text="1. Dados do Cliente (Locatário)"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <children>
+                                <TextField styleClass="input-primary" fx:id="nameField" disable="true" promptText="Nome"/>
+                                <TextField styleClass="input-primary" fx:id="cpfField" disable="true" promptText="CPF"/>
+                            </children>
+                        </HBox>
+                    </children>
                 </VBox>
-                <Separator />
+
+                <Separator/>
+
+                <!-- 2. Equipamentos -->
                 <VBox spacing="15">
-                    <Label style="-fx-font-size: 16px" text="2. Seleção de Equipamentos Disponíveis" />
-                    <TableView fx:id="equipmentTable" prefHeight="200" editable="true">
-                        <columns>
-                            <TableColumn fx:id="colSelect" text="Sel." prefWidth="50"/>
-                            <TableColumn fx:id="colQtd" text="Qtd." prefWidth="50"/>
-                            <TableColumn fx:id="colName" text="Nome" prefWidth="150"/>
-                            <TableColumn fx:id="colType" text="Tipo" prefWidth="150"/>
-                            <TableColumn fx:id="availableQuantity" text="Quantidade Disponível" prefWidth="150"/>
-                            <TableColumn fx:id="colDailyValue" text="Diária (R$)" prefWidth="100"/>
-                        </columns>
-                    </TableView>
+                    <children>
+                        <Label style="-fx-font-size: 16px" text="2. Seleção de Equipamentos Disponíveis"/>
+                        <TableView fx:id="equipmentTable" prefHeight="200" editable="true">
+                            <columns>
+                                <TableColumn fx:id="colSelect" text="Sel." prefWidth="50"/>
+                                <TableColumn fx:id="colQtd" text="Qtd." prefWidth="50"/>
+                                <TableColumn fx:id="colName" text="Nome" prefWidth="150"/>
+                                <TableColumn fx:id="colType" text="Tipo" prefWidth="150"/>
+                                <TableColumn fx:id="availableQuantity" text="Quantidade Disponível" prefWidth="150"/>
+                                <TableColumn fx:id="colDailyValue" text="Diária (R$)" prefWidth="100"/>
+                            </columns>
+                        </TableView>
+                    </children>
                 </VBox>
-                <Separator />
+
+                <Separator/>
+
+                <!-- 3. Prazos e valores -->
                 <VBox spacing="15">
-                    <Label style="-fx-font-size: 16px" text="3. Prazos e Valores do Contrato" />
-                    <HBox spacing="20">
-                        <VBox spacing="5">
-                            <Label text="Data de Início da Locação"/>
-                            <DatePicker fx:id="startDatePicker" promptText="Início" onAction="#calculateTotal"/>
+                    <children>
+                        <Label style="-fx-font-size: 16px" text="3. Prazos e Valores do Contrato"/>
+
+                        <HBox spacing="20">
+                            <children>
+                                <VBox spacing="5">
+                                    <children>
+                                        <Label text="Data de Início da Locação"/>
+                                        <DatePicker fx:id="startDatePicker" promptText="Início" onAction="#calculateTotal"/>
+                                    </children>
+                                </VBox>
+
+                                <VBox spacing="5">
+                                    <children>
+                                        <Label text="Data Prevista de Devolução"/>
+                                        <DatePicker fx:id="endDatePicker" promptText="Devolução" onAction="#calculateTotal"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <VBox spacing="10" style="-fx-background-color: #ecf0f1; -fx-padding: 15;">
+                            <children>
+                                <Label fx:id="vipStatusLabel" style="-fx-font-size: 16px;"/>
+                                <Label fx:id="totalValueLabel" text="Valor Bruto: R$ 0,00" style="-fx-font-size: 14px;"/>
+                                <Label fx:id="discountLabel" text="Desconto VIP (10%): R$ 0,00" 
+                                       style="-fx-font-size: 14px; -fx-text-fill: gold; -fx-font-weight: bold;"/>
+                                <Separator/>
+                                <Label fx:id="finalValueLabel" text="Valor Final: R$ 0,00"
+                                       style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: green;"/>
+                            </children>
                         </VBox>
-                        <VBox spacing="5">
-                            <Label text="Data Prevista de Devolução"/>
-                            <DatePicker fx:id="endDatePicker" promptText="Devolução" onAction="#calculateTotal"/>
-                        </VBox>
-                    </HBox>
-                    <VBox spacing="10" style="-fx-background-color: #ecf0f1; -fx-padding: 15;">
-                     <Label fx:id="vipStatusLabel" 
-                            text="" 
-                            style="-fx-font-size: 16px;"/>
-                     <Label fx:id="totalValueLabel" 
-                            text="Valor Bruto: R$ 0,00" 
-                            style="-fx-font-size: 14px;"/>
-                     <Label fx:id="discountLabel" 
-                            text="Desconto VIP (10%): R$ 0,00" 
-                            style="-fx-font-size: 14px; -fx-text-fill: gold; -fx-font-weight: bold;"/>
-            <Separator/>
-    <Label fx:id="finalValueLabel" 
-           text="Valor Final: R$ 0,00" 
-           style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: green;"/>
-</VBox>
-                <Button text="Criar Contrato de Locação" fx:id="submitContractButton" onAction="#createContract" styleClass="submit-button" maxWidth="Infinity" />
+
+                        <Button text="Criar Contrato de Locação"
+                                fx:id="submitContractButton"
+                                onAction="#createContract"
+                                styleClass="submit-button"
+                                maxWidth="Infinity"/>
+                    </children>
+                </VBox>
+
             </children>
-            <Separator/>
-                <VBox fx:id="inspectionPanel" 
-                      spacing="15" 
-                      visible="false" 
-                      managed="false"
-                      style="-fx-background-color: #fff3cd; -fx-padding: 20; -fx-border-color: #f39c12; -fx-border-width: 2;">
-    <Label text="Inspeção de Devolução" 
-           style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #856404;"/>
-    
-    <HBox spacing="20">
-        <VBox spacing="5">
-            <Label text="Data de Devolução:" style="-fx-font-weight: bold;"/>
-            <DatePicker fx:id="returnDatePicker" promptText="Selecione a data"/>
-        </VBox>
-        
-        <VBox spacing="5">
-            <Label text="Status do Equipamento:" style="-fx-font-weight: bold;"/>
-            <CheckBox fx:id="hasDamageCheckBox" text="Equipamento com danos?"/>
-        </VBox>
-    </HBox>
-    
-    <VBox spacing="5">
-        <Label text="Descrição dos Danos:" style="-fx-font-weight: bold;"/>
-        <TextField fx:id="damageDescriptionField" 
-                  promptText="Descreva os danos encontrados..." 
-                  disable="true"/>
-    </VBox>
-    <VBox spacing="5">
-        <Label text="Observações Gerais:" style="-fx-font-weight: bold;"/>
-        <TextArea fx:id="observationsArea" 
-                 promptText="Anote qualquer informação relevante..." 
-                 prefRowCount="3"/>
-    </VBox>
-    <Separator/>
-    <VBox spacing="5" style="-fx-background-color: white; -fx-padding: 10;">
-        <Label fx:id="lateFeesLabel" 
-               text="Taxa de Atraso: R$ 0,00" 
-               style="-fx-font-size: 14px;"/>
-        <Label fx:id="damageFeesLabel" 
-               text="Taxa de Danos: R$ 0,00" 
-               style="-fx-font-size: 14px;"/>
-        <Label fx:id="totalFeesLabel" 
-               text="Total de Taxas: R$ 0,00" 
-               style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #c0392b;"/>
-    </VBox>
-    
-    <Button fx:id="confirmReturnButton" 
-           text="✓ CONFIRMAR DEVOLUÇÃO" 
-           onAction="#confirmReturn"
-           style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 10;"/>
-</VBox>
+
         </VBox>
     </children>
+
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
-</StackPane>
 
+</StackPane>

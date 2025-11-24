@@ -110,7 +110,7 @@ public class ContractRentalDAO {
 
     public ObservableList<Equipment> getEquipmentsByContractId(int id) {
         ObservableList<Equipment> equipments = FXCollections.observableArrayList();
-        String sql = "SELECT Ic.quantity, Ic.id_contract, Eq.id, Eq.name, Eq.damage_fee FROM ItemContract as Ic " +
+        String sql = "SELECT Ic.quantity, Ic.id_contract, Eq.id, Eq.name FROM ItemContract as Ic " +
                      "INNER JOIN Equipments as Eq ON Ic.id_equipament = Eq.id WHERE Ic.id_contract = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -120,7 +120,6 @@ public class ContractRentalDAO {
             while (rs.next()) {
                 Equipment equipment = new Equipment(rs.getString("name"), rs.getInt("quantity"));
                 equipment.setId(rs.getInt("id"));
-                equipment.setDamageFee(rs.getDouble("damage_fee"));
                 equipments.add(equipment);
             }
             DatabaseConnection.getDisconnect();
@@ -132,7 +131,7 @@ public class ContractRentalDAO {
 
     public boolean finalizeContract(int contractId, LocalDate returnDate, double lateFee, 
                                     double damageFee, String observations) throws SQLException {
-        String sql = "UPDATE Contract SET status = 'finalizado', return_date = ?, late_fee = ?, " +
+        String sql = "UPDATE Contract SET status = 'encerrado', end_date = ?, late_fee = ?, " +
                      "damage_fee = ?, observations = ? WHERE id_contract = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);

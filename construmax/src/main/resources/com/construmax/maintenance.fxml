@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -7,47 +6,45 @@
 <VBox xmlns="http://javafx.com/javafx" 
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.construmax.Controllers.MaintenanceController"
-      spacing="20" 
-      padding="20">
+      spacing="20">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
     
     <Label text="Gestão de Manutenções" 
            style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    
     <HBox spacing="20">
         <VBox spacing="10" HBox.hgrow="ALWAYS" 
               style="-fx-background-color: #ecf0f1; -fx-padding: 15;">
             <Label text="Agendar Nova Manutenção" 
                    style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
-            
             <Label text="Equipamento:"/>
             <ComboBox fx:id="equipmentComboBox" 
-                     promptText="Selecione o equipamento" 
-                     prefWidth="300"/>
-            
+                      promptText="Selecione o equipamento" 
+                      prefWidth="300"/>
             <Label text="Data de Agendamento:"/>
             <DatePicker fx:id="scheduledDatePicker" 
-                       promptText="Selecione a data" 
-                       prefWidth="300"/>
-            
+                        promptText="Selecione a data" 
+                        prefWidth="300"/>
             <Label text="Tipo de Manutenção:"/>
             <ComboBox fx:id="maintenanceTypeCombo" 
-                     promptText="Tipo" 
-                     prefWidth="300"/>
-            
+                      promptText="Tipo" 
+                      prefWidth="300"/>
             <Label text="Descrição:"/>
             <TextArea fx:id="descriptionArea" 
-                     promptText="Descreva o que precisa ser feito..." 
-                     prefRowCount="3"/>
-            
+                      promptText="Descreva o que precisa ser feito..." 
+                      prefRowCount="3"/>
             <Button fx:id="scheduleButton" 
-                   text="✓ Agendar Manutenção" 
-                   onAction="#scheduleMaintenance"
-                   style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                    text="✓ Agendar Manutenção" 
+                    onAction="#scheduleMaintenance"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"/>
         </VBox>
+        
         <VBox spacing="15" 
               style="-fx-background-color: #3498db; -fx-padding: 20; -fx-border-radius: 5;">
             <Label text="Estatísticas" 
                    style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: white;"/>
-            
             <Label fx:id="scheduledCountLabel" 
                    text="Agendadas: 0" 
                    style="-fx-text-fill: white; -fx-font-size: 14px;"/>
@@ -59,12 +56,14 @@
                    style="-fx-text-fill: #2ecc71; -fx-font-size: 14px;"/>
         </VBox>
     </HBox>
+    
     <HBox spacing="10">
         <Button text="Todas as Manutenções" onAction="#showAll" 
                 style="-fx-background-color: #95a5a6; -fx-text-fill: white;"/>
         <Button text="Apenas Agendadas" onAction="#filterScheduled" 
                 style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
     </HBox>
+    
     <TableView fx:id="maintenanceTable" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="colEquipmentName" text="Equipamento" prefWidth="150"/>

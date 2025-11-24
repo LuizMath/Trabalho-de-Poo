@@ -26,11 +26,11 @@ public class DatabaseConnection {
     }
     public static void getDisconnect () {
         try {
-            connection.close();
-            connection = null;
-            System.out.println("Conexão encerrada com sucesso!");
-        } catch (SQLException ex) {
-            System.out.println("Erro ao fechar conexão: " + ex.getMessage());
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

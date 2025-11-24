@@ -40,8 +40,7 @@ public class RegisterEquipmentController {
             type.getText(),
             description.getText(),
             Double.parseDouble(dailyValue.getText()),
-            Integer.parseInt(quantity.getText()),
-            Double.parseDouble(damageFee.getText())
+            Integer.parseInt(quantity.getText())
         );
 
         boolean clearInputs = equipmentDAO.insertEquipment(equipment);

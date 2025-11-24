@@ -12,16 +12,14 @@ public class Equipment {
     private String description; 
     private int quantity;
     private Double dailyValue;
-    private Double damageFee;
     private BooleanProperty selected = new SimpleBooleanProperty(false);
 
-    public Equipment(String name, String type, String description, Double dailyValue, int quantity, Double damageFee) {
+    public Equipment(String name, String type, String description, Double dailyValue, int quantity) {
         this.name = name;
         this.type = type;
         this.description = description;
         this.dailyValue = dailyValue;
         this.quantity = quantity;
-        this.damageFee = damageFee;
     }
     
     public Equipment(String name, int quantity) {
@@ -42,9 +40,6 @@ public class Equipment {
     public String getDescription() { return this.description; }
     public int getQuantity() { return this.quantity; }
     public Double getDailyValue() { return this.dailyValue; }
-    public Double getDamageFee() { return this.damageFee; }
-    
-    public void setDamageFee(Double damageFee) { this.damageFee = damageFee; }
     
     public int getAvailableQuantity() { return this.availableQuantity; }
     public int getMaintenanceQuantity() { return this.maintenanceQuantity; }

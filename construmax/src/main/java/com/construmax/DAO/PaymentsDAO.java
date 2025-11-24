@@ -10,10 +10,10 @@ import com.construmax.Utils.Toast;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class PaymentDAO {
+public class PaymentsDAO {
     private Connection connection;
 
-    public PaymentDAO(Connection connection) {
+    public PaymentsDAO(Connection connection) {
         this.connection = connection;
     }
 

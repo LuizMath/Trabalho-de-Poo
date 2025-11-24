@@ -162,12 +162,6 @@ public class ReturnEquipmentController {
             // Busca a taxa de dano dos equipamentos
             ContractRentalDAO contractDAO = new ContractRentalDAO(DatabaseConnection.getConnection());
             ObservableList<Equipment> equipments = contractDAO.getEquipmentsByContractId(contract.getId());
-            
-            for (Equipment eq : equipments) {
-                if (eq.getDamageFee() != null) {
-                    calculatedDamageFee += eq.getDamageFee() * eq.getQuantity();
-                }
-            }
         }
         
         // Atualiza labels

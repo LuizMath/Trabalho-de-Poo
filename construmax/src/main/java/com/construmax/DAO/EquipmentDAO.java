@@ -21,7 +21,7 @@ public class EquipmentDAO {
     }
     
     public boolean insertEquipment(Equipment equipment) {
-        String sqlStatement = "INSERT INTO Equipments (name, type, description, daily_value, quantity, damage_fee) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlStatement = "INSERT INTO Equipments (name, type, description, daily_value, quantity) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement stmt = connection.prepareStatement(sqlStatement);
             stmt.setString(1, equipment.getName());
@@ -29,7 +29,6 @@ public class EquipmentDAO {
             stmt.setString(3, equipment.getDescription());
             stmt.setDouble(4, equipment.getDailyValue());
             stmt.setInt(5, equipment.getQuantity());
-            stmt.setDouble(6, equipment.getDamageFee());
             stmt.executeUpdate();
             Toast.showToastSucess("Equipamento Cadastrado!");
             DatabaseConnection.getDisconnect();
@@ -83,7 +82,7 @@ public class EquipmentDAO {
 
     public ObservableList<Stock> getAllEquipments() {
         ObservableList<Stock> equipments = FXCollections.observableArrayList();
-        String sqlStatement = "SELECT Eq.id, Eq.name, Eq.type, Eq.quantity, Eq.damage_fee, Eq.description, Eq.daily_value, " +
+        String sqlStatement = "SELECT Eq.id, Eq.name, Eq.type, Eq.quantity, Eq.description, Eq.daily_value, " +
                              "St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity " +
                              "FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
         try {
@@ -95,7 +94,6 @@ public class EquipmentDAO {
                     rs.getString("type"), 
                     rs.getString("description"), 
                     rs.getDouble("daily_value"), 
-                    rs.getDouble("damage_fee"), 
                     rs.getInt("total_quantity"), 
                     rs.getInt("available_quantity"), 
                     rs.getInt("maintenance_quantity"), 
@@ -129,7 +127,7 @@ public class EquipmentDAO {
     
     public ObservableList<Stock> getAvailableEquipments() {
         ObservableList<Stock> equipments = FXCollections.observableArrayList();
-        String sqlStatement = "SELECT Eq.id, Eq.name, Eq.type, Eq.quantity, Eq.damage_fee, Eq.description, Eq.daily_value, " +
+        String sqlStatement = "SELECT Eq.id, Eq.name, Eq.type, Eq.quantity, Eq.description, Eq.daily_value, " +
                              "St.total_quantity, St.available_quantity, St.maintenance_quantity, St.in_use_quantity " +
                              "FROM Equipments as Eq INNER JOIN Stock as St ON Eq.id=St.id_equipment";
         try (PreparedStatement stmt = connection.prepareStatement(sqlStatement)) {
@@ -141,7 +139,6 @@ public class EquipmentDAO {
                         rs.getString("type"), 
                         rs.getString("description"), 
                         rs.getDouble("daily_value"), 
-                        rs.getDouble("damage_fee"), 
                         rs.getInt("total_quantity"), 
                         rs.getInt("available_quantity"), 
                         rs.getInt("maintenance_quantity"), 
@@ -172,8 +169,7 @@ public class EquipmentDAO {
                     rs.getString("type"),
                     rs.getString("description"),
                     rs.getDouble("daily_value"),
-                    rs.getInt("quantity"),
-                    rs.getDouble("damage_fee")
+                    rs.getInt("quantity")
                 );
                 equipment.setId(id);
                 return equipment;

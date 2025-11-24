@@ -3,7 +3,7 @@ package com.construmax.Controllers;
 import com.construmax.DAO.ContractRentalDAO;
 import com.construmax.DAO.EquipmentDAO;
 import com.construmax.DAO.LoyaltyDAO;
-import com.construmax.DAO.PaymentDAO;
+import com.construmax.DAO.PaymentsDAO;
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.ContractLocation;
 import com.construmax.Model.Payment;
@@ -12,14 +12,13 @@ import com.construmax.Model.Stock;
 import com.construmax.Model.User;
 import com.construmax.Utils.GenerateContract;
 import com.construmax.Utils.Toast;
-import javafx.util.converter.IntegerStringConverter;
-
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -47,11 +46,18 @@ public class RentEquipmentController {
     @FXML private TableColumn<Stock, Double> colDailyValue;
 
     private ObservableList<Stock> availableEquipments;
-    private static final double VIP_DISCOUNT = 0.10; // 10% de desconto
+    private static final double VIP_DISCOUNT = 0.10;
 
     @FXML
+    public void initialize() {
+        mountEquipmentsTable();
+        loadClient();
+        startDatePicker.valueProperty().addListener((obs, old, n) -> calculateTotal());
+        endDatePicker.valueProperty().addListener((obs, old, n) -> calculateTotal());
+    }
+
     private void mountEquipmentsTable() {
-        colSelect.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
+        colSelect.setCellValueFactory(cd -> cd.getValue().selectedProperty());
         colSelect.setCellFactory(CheckBoxTableCell.forTableColumn(colSelect));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -59,16 +65,19 @@ public class RentEquipmentController {
         colDailyValue.setCellValueFactory(new PropertyValueFactory<>("dailyValue"));
         colQtd.setCellValueFactory(new PropertyValueFactory<>("rentedQuantity"));
         colQtd.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+
         colQtd.setOnEditCommit(event -> {
             Stock stock = event.getRowValue();
-            int newValue = event.getNewValue();
-            if (newValue < 1) {
+            Integer newValue = event.getNewValue();
+            if (newValue == null || newValue < 1) {
                 Toast.showToastError("A quantidade deve ser pelo menos 1!");
+                stock.setRentedQuantity(event.getOldValue());
                 equipmentTable.refresh();
                 return;
             }
             if (newValue > stock.getAvailableQuantity()) {
                 Toast.showToastError("Quantidade indisponível no estoque!");
+                stock.setRentedQuantity(event.getOldValue());
                 equipmentTable.refresh();
                 return;
             }
@@ -76,29 +85,33 @@ public class RentEquipmentController {
             stock.setSelected(newValue > 0);
             calculateTotal();
         });
+
         loadAvailableEquipments();
-        availableEquipments.forEach(eq ->
-            eq.selectedProperty().addListener((obs, oldV, newV) -> calculateTotal())
-        );
+
+        if (availableEquipments != null) {
+            availableEquipments.forEach(eq ->
+                eq.selectedProperty().addListener((o, ov, nv) -> calculateTotal()));
+        }
     }
 
-    @FXML
     private void loadAvailableEquipments() {
+    try {
         EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
         availableEquipments = equipmentDAO.getAvailableEquipments();
         equipmentTable.setItems(availableEquipments);
-        DatabaseConnection.getDisconnect();
+    } catch (Exception e) {
+        Toast.showToastError("Erro ao carregar equipamentos: " + e.getMessage());
+        e.printStackTrace();
     }
+}
+
 
     private void loadClient() {
-        User currentUser = Session.getUser();
-        
-        if (currentUser != null) {
-            nameField.setText(currentUser.getName());
-            cpfField.setText(currentUser.getCPF());
-            
-            // Mostra status VIP
-            if (currentUser.isVIP()) {
+        User u = Session.getUser();
+        if (u != null) {
+            nameField.setText(u.getName());
+            cpfField.setText(u.getCPF());
+            if (u.isVIP()) {
                 vipStatusLabel.setText("⭐ CLIENTE VIP - 10% DE DESCONTO");
                 vipStatusLabel.setStyle("-fx-text-fill: gold; -fx-font-weight: bold;");
             } else {
@@ -116,138 +129,105 @@ public class RentEquipmentController {
     private void calculateTotal() {
         LocalDate start = startDatePicker.getValue();
         LocalDate end = endDatePicker.getValue();
-
         if (start == null || end == null || start.isAfter(end)) {
-            totalValueLabel.setText("Valor Bruto: R$ 0,00");
-            discountLabel.setText("Desconto VIP: R$ 0,00");
-            finalValueLabel.setText("Valor Final: R$ 0,00");
+            resetTotalLabels();
             return;
         }
-
-        List<Stock> selectedEquipments = availableEquipments.stream()
-            .filter(st -> st.isSelected() && st.getRentedQuantity() > 0)
-            .collect(Collectors.toList());
-
-        if (selectedEquipments.isEmpty()) {
-            totalValueLabel.setText("Valor Bruto: R$ 0,00");
-            discountLabel.setText("Desconto VIP: R$ 0,00");
-            finalValueLabel.setText("Valor Final: R$ 0,00");
+        List<Stock> selected = availableEquipments.stream()
+                .filter(st -> st.isSelected() && st.getRentedQuantity() > 0)
+                .collect(Collectors.toList());
+        if (selected.isEmpty()) {
+            resetTotalLabels();
             return;
         }
-
         long days = ChronoUnit.DAYS.between(start, end) + 1;
-        double dailyTotal = selectedEquipments.stream()
-            .mapToDouble(st -> st.getDailyValue() * st.getRentedQuantity())
-            .sum();
-        double grossValue = dailyTotal * days;
-
-        // Aplica desconto VIP se aplicável
+        double dailyTotal = selected.stream()
+                .mapToDouble(st -> st.getDailyValue() * st.getRentedQuantity())
+                .sum();
+        double gross = dailyTotal * days;
         double discount = 0.0;
-        User currentUser = Session.getUser();
-        if (currentUser != null && currentUser.isVIP()) {
-            discount = grossValue * VIP_DISCOUNT;
-        }
+        User u = Session.getUser();
+        if (u != null && u.isVIP()) discount = gross * VIP_DISCOUNT;
+        double total = gross - discount;
 
-        double finalValue = grossValue - discount;
-
-        totalValueLabel.setText(String.format("Valor Bruto: R$ %.2f", grossValue));
+        totalValueLabel.setText(String.format("Valor Bruto: R$ %.2f", gross));
         discountLabel.setText(String.format("Desconto VIP (10%%): R$ %.2f", discount));
-        finalValueLabel.setText(String.format("Valor Final: R$ %.2f", finalValue));
-        finalValueLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: green;");
+        finalValueLabel.setText(String.format("Valor Final: R$ %.2f", total));
+        finalValueLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: green;");
+    }
+
+    private void resetTotalLabels() {
+        totalValueLabel.setText("Valor Bruto: R$ 0,00");
+        discountLabel.setText("Desconto VIP (10%): R$ 0,00");
+        finalValueLabel.setText("Valor Final: R$ 0,00");
     }
 
     @FXML
     private void createContract() {
         LocalDate start = startDatePicker.getValue();
         LocalDate end = endDatePicker.getValue();
-        List<Stock> selectedEquipments = availableEquipments.stream()
-            .filter(Stock::isSelected)
-            .collect(Collectors.toList());
-
-        if (selectedEquipments.isEmpty()) {
-            Toast.showToastError("Selecione pelo menos um equipamento.");
-            return;
-        }
         if (start == null || end == null || start.isAfter(end)) {
             Toast.showToastError("Verifique as datas de locação.");
             return;
         }
-
-        User currentUser = Session.getUser();
-        if (currentUser == null) {
+        List<Stock> selected = availableEquipments.stream()
+                .filter(st -> st.isSelected() && st.getRentedQuantity() > 0)
+                .collect(Collectors.toList());
+        if (selected.isEmpty()) {
+            Toast.showToastError("Selecione pelo menos um equipamento.");
+            return;
+        }
+        User u = Session.getUser();
+        if (u == null) {
             Toast.showToastError("Usuário não está logado!");
             return;
         }
 
-        // Cria contrato com valor já com desconto VIP aplicado
-        ContractLocation contract = new ContractLocation(currentUser, selectedEquipments, start, end);
-        
-        // Aplica desconto VIP se aplicável
-        if (currentUser.isVIP()) {
-            double originalValue = contract.getTotalContractValue();
-            double discountedValue = originalValue * (1 - VIP_DISCOUNT);
-            // Aqui você precisaria adicionar um setter no ContractLocation
-            // contract.setTotalContractValue(discountedValue);
-        }
-
-        ContractRentalDAO contractRentalDAO = new ContractRentalDAO(DatabaseConnection.getConnection());
-
         try {
-            // Salva contrato
-            contractRentalDAO.insertContract(contract);
+            ContractLocation contract = new ContractLocation(u, selected, start, end);
+            double finalValue = contract.getTotalContractValue();
+            if (u.isVIP()) finalValue = finalValue * (1 - VIP_DISCOUNT);
 
-            // Cria pagamento
-            PaymentDAO paymentDAO = new PaymentDAO(DatabaseConnection.getConnection());
-            Payment payment = new Payment(
-                contract.getId(),
-                contract.getTotalContractValue(),
-                LocalDate.now().plusDays(5) // Vencimento em 5 dias
-            );
+            ContractRentalDAO contractDAO = new ContractRentalDAO(DatabaseConnection.getConnection());
+            contractDAO.insertContract(contract);
+
+            PaymentsDAO paymentDAO = new PaymentsDAO(DatabaseConnection.getConnection());
+            Payment payment = new Payment(contract.getId(), finalValue, LocalDate.now().plusDays(5));
             paymentDAO.insertPayment(payment);
 
-            // Adiciona pontos de fidelidade
             LoyaltyDAO loyaltyDAO = new LoyaltyDAO(DatabaseConnection.getConnection());
-            loyaltyDAO.addPointsForContract(currentUser.getId(), contract.getTotalContractValue());
+            loyaltyDAO.addPointsForContract(u.getId(), finalValue);
 
-            // Gera PDF
             GenerateContract.generateContract(contract);
 
-            // Atualiza estoque
-            for (Stock selectedEquipment : selectedEquipments) {
-                EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
+            EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
+            for (Stock eq : selected) {
                 equipmentDAO.updateStockQuantity(
-                    selectedEquipment.getRentedQuantity(),
-                    selectedEquipment.getId(),
-                    selectedEquipment.getAvailableQuantity(),
-                    selectedEquipment.getInUseQuantity()
+                        eq.getRentedQuantity(),
+                        eq.getId(),
+                        eq.getAvailableQuantity(),
+                        eq.getInUseQuantity()
                 );
             }
 
-            // Limpa tela
-            for (Stock eq : selectedEquipments) {
-                eq.setSelected(false);
-                eq.setRentedQuantity(0);
-            }
-            equipmentTable.refresh();
-            totalValueLabel.setText("Valor Bruto: R$ 0,00");
-            discountLabel.setText("Desconto VIP: R$ 0,00");
-            finalValueLabel.setText("Valor Final: R$ 0,00");
-
+            clearForm();
             Toast.showToastSucess("Contrato de locação criado com sucesso!");
 
-        } catch (SQLException ex) {
-            Toast.showToastError("Erro ao salvar contrato: " + ex.getMessage());
-            ex.printStackTrace();
+        } catch (SQLException e) {
+            Toast.showToastError("Erro ao salvar contrato: " + e.getMessage());
+        } finally {
+            DatabaseConnection.getDisconnect();
         }
     }
 
-    @FXML
-    public void initialize() {
-        mountEquipmentsTable();
-        loadClient();
-        
-        // Listeners para recalcular ao mudar datas
-        startDatePicker.valueProperty().addListener((obs, old, newVal) -> calculateTotal());
-        endDatePicker.valueProperty().addListener((obs, old, newVal) -> calculateTotal());
+    private void clearForm() {
+        availableEquipments.forEach(eq -> {
+            eq.setSelected(false);
+            eq.setRentedQuantity(0);
+        });
+        equipmentTable.refresh();
+        startDatePicker.setValue(null);
+        endDatePicker.setValue(null);
+        resetTotalLabels();
     }
 }

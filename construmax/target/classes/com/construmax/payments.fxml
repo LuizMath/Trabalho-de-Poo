@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx" 
       xmlns:fx="http://javafx.com/fxml"
-      spacing="20" 
-      padding="20">
+      fx:controller="com.construmax.Controllers.PaymentsController"
+      spacing="20">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    
     <Label text="Gestão de Pagamentos" 
            style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
     
@@ -17,6 +20,7 @@
         <Button text="Apenas Pendentes" onAction="#filterPending" 
                 style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
     </HBox>
+    
     <TableView fx:id="paymentsTable" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="colContractId" text="Contrato #" prefWidth="80"/>
@@ -28,6 +32,7 @@
             <TableColumn fx:id="colActions" text="Ações" prefWidth="120"/>
         </columns>
     </TableView>
+    
     <HBox spacing="30" style="-fx-background-color: #ecf0f1; -fx-padding: 15;">
         <VBox spacing="5">
             <Label text="Financeiro" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
@@ -38,6 +43,7 @@
     </HBox>
     
     <Separator/>
+    
     <Label text="Programa de Fidelidade" 
            style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #f39c12;"/>
     

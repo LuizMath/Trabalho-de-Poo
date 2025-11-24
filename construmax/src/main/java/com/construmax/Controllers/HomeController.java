@@ -47,10 +47,6 @@ public class HomeController {
               loadView("rentEquipment");
               break;
             }
-            case "userContracts": {
-              loadView("contracts");
-              break;
-            }
             case "payments": {
               loadView("payments");
               break;

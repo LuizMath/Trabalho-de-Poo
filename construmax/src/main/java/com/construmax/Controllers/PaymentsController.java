@@ -1,7 +1,7 @@
 package com.construmax.Controllers;
 
 import com.construmax.DAO.LoyaltyDAO;
-import com.construmax.DAO.PaymentDAO;
+import com.construmax.DAO.PaymentsDAO;
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.LoyaltyPoints;
 import com.construmax.Model.Payment;
@@ -105,7 +105,7 @@ public class PaymentsController {
 
     private void loadPayments() {
         if (Session.getUser() != null) {
-            PaymentDAO paymentDAO = new PaymentDAO(DatabaseConnection.getConnection());
+            PaymentsDAO paymentDAO = new PaymentsDAO(DatabaseConnection.getConnection());
             payments = paymentDAO.getPaymentsByUserId(Session.getUser().getId());
             paymentsTable.setItems(payments);
         }
@@ -194,7 +194,7 @@ public class PaymentsController {
             if (response == confirmButtonType) {
                 payment.setPaymentMethod(paymentMethodCombo.getValue());
                 
-                PaymentDAO paymentDAO = new PaymentDAO(DatabaseConnection.getConnection());
+                PaymentsDAO paymentDAO = new PaymentsDAO(DatabaseConnection.getConnection());
                 if (paymentDAO.updatePayment(payment)) {
                     // Usa pontos se selecionado
                     if (useLoyaltyCheckBox.isSelected() && userLoyalty != null) {
@@ -214,14 +214,14 @@ public class PaymentsController {
 
     @FXML
     private void filterPending() {
-        PaymentDAO paymentDAO = new PaymentDAO(DatabaseConnection.getConnection());
+        PaymentsDAO paymentDAO = new PaymentsDAO(DatabaseConnection.getConnection());
         ObservableList<Payment> pendingPayments = paymentDAO.getPendingPayments();
         
         if (Session.getUser() != null) {
             pendingPayments.removeIf(p -> {
                 // Mantém apenas pagamentos do usuário atual
                 try {
-                    PaymentDAO dao = new PaymentDAO(DatabaseConnection.getConnection());
+                    PaymentsDAO dao = new PaymentsDAO(DatabaseConnection.getConnection());
                     Payment fullPayment = dao.getPaymentByContractId(p.getContractId());
                     return fullPayment == null;
                 } catch (Exception e) {
