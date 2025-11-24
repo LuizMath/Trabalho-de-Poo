@@ -4,61 +4,51 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.BooleanProperty;
 
 public class Equipment {
-  public Equipment(String name, String type, String description, Double dailyValue, int quantity, Double damageFee) {
-      this.name = name;
-      this.type = type;
-      this.description = description;
-      this.dailyValue = dailyValue;
-      this.quantity = quantity;
-      this.damageFee = damageFee;
-  }
-  public Equipment (String name, int quantity) {
-      this.name = name;
-      this.quantity = quantity;
-  }
-  private String name;
-  private int availableQuantity;
-  private int maintenanceQuantity;
-  private String type;
-  private String description; 
-  private int quantity;
-  private Double dailyValue;
-  private Double damageFee;
-  private BooleanProperty selected = new SimpleBooleanProperty(false);
+    private int id;
+    private String name;
+    private int availableQuantity;
+    private int maintenanceQuantity;
+    private String type;
+    private String description; 
+    private int quantity;
+    private Double dailyValue;
+    private Double damageFee;
+    private BooleanProperty selected = new SimpleBooleanProperty(false);
 
-  public BooleanProperty selectedProperty() { return selected; }
-  public boolean isSelected() { return selected.get(); }
-  public void setSelected(boolean selected) { this.selected.set(selected); }
+    public Equipment(String name, String type, String description, Double dailyValue, int quantity, Double damageFee) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.dailyValue = dailyValue;
+        this.quantity = quantity;
+        this.damageFee = damageFee;
+    }
+    
+    public Equipment(String name, int quantity) {
+        this.name = name;
+        this.quantity = quantity;
+    }
 
+    // Getters e Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-  public String getName () {
-    return this.name;
-  }
-  public String getType () {
-    return this.type;
-  }
-  public String getDescription () {
-    return this.description;
-  }
-  public int getQuantity () {
-    return this.quantity;
-  }
-  public Double getDailyValue () {
-    return this.dailyValue;
-  }
-  public Double getDamageFee () {
-    return this.damageFee;
-  }
-  public int getAvailableQuantity () {
-    return this.availableQuantity;
-  }
-  public int getMaintenanceQuantity () {
-    return this.maintenanceQuantity;
-  }
-  public void setAvailableQuantity (int availableQuantity) {
-    this.availableQuantity = availableQuantity;
-  }
-  public void setMaintenanceQuantity (int maintenanceQuantity) {
-    this.maintenanceQuantity = maintenanceQuantity;
-  }
+    public BooleanProperty selectedProperty() { return selected; }
+    public boolean isSelected() { return selected.get(); }
+    public void setSelected(boolean selected) { this.selected.set(selected); }
+
+    public String getName() { return this.name; }
+    public String getType() { return this.type; }
+    public String getDescription() { return this.description; }
+    public int getQuantity() { return this.quantity; }
+    public Double getDailyValue() { return this.dailyValue; }
+    public Double getDamageFee() { return this.damageFee; }
+    
+    public void setDamageFee(Double damageFee) { this.damageFee = damageFee; }
+    
+    public int getAvailableQuantity() { return this.availableQuantity; }
+    public int getMaintenanceQuantity() { return this.maintenanceQuantity; }
+    
+    public void setAvailableQuantity(int availableQuantity) { this.availableQuantity = availableQuantity; }
+    public void setMaintenanceQuantity(int maintenanceQuantity) { this.maintenanceQuantity = maintenanceQuantity; }
 }

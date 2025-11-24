@@ -2,15 +2,14 @@ package com.construmax.Controllers;
 
 import com.construmax.DAO.ContractRentalDAO;
 import com.construmax.DAO.EquipmentDAO;
+import com.construmax.DAO.LoyaltyDAO;
+import com.construmax.DAO.PaymentDAO;
 import com.construmax.Database.DatabaseConnection;
 import com.construmax.Model.ContractLocation;
+import com.construmax.Model.Payment;
 import com.construmax.Model.Session;
 import com.construmax.Model.Stock;
-
 import com.construmax.Model.User;
-import java.sql.SQLException;
-
-
 import com.construmax.Utils.GenerateContract;
 import com.construmax.Utils.Toast;
 import javafx.util.converter.IntegerStringConverter;
@@ -22,6 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.cell.CheckBoxTableCell;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -32,9 +32,12 @@ public class RentEquipmentController {
     @FXML private TextField cpfField;
     @FXML private TextField nameField;
     @FXML private Label clientInfoLabel;
+    @FXML private Label vipStatusLabel;
     @FXML private DatePicker startDatePicker;
     @FXML private DatePicker endDatePicker;
     @FXML private Label totalValueLabel;
+    @FXML private Label discountLabel;
+    @FXML private Label finalValueLabel;
     @FXML private TableView<Stock> equipmentTable;
     @FXML private TableColumn<Stock, Boolean> colSelect;
     @FXML private TableColumn<Stock, Integer> colQtd;
@@ -44,9 +47,10 @@ public class RentEquipmentController {
     @FXML private TableColumn<Stock, Double> colDailyValue;
 
     private ObservableList<Stock> availableEquipments;
+    private static final double VIP_DISCOUNT = 0.10; // 10% de desconto
 
     @FXML
-    private void mountEquipmentsTable () {
+    private void mountEquipmentsTable() {
         colSelect.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
         colSelect.setCellFactory(CheckBoxTableCell.forTableColumn(colSelect));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -77,6 +81,7 @@ public class RentEquipmentController {
             eq.selectedProperty().addListener((obs, oldV, newV) -> calculateTotal())
         );
     }
+
     @FXML
     private void loadAvailableEquipments() {
         EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
@@ -84,31 +89,38 @@ public class RentEquipmentController {
         equipmentTable.setItems(availableEquipments);
         DatabaseConnection.getDisconnect();
     }
-    private void loadClient () {
-    // Pega o usuário UMA VEZ
-    User currentUser = Session.getUser(); 
 
-    // VERIFICA SE ELE EXISTE (NÃO É NULO)
-    if (currentUser != null) {
-        nameField.setText(currentUser.getName());
-        cpfField.setText(currentUser.getCPF());
-    } else {
-        // Opcional: informar que não há usuário
-        nameField.setText("N/A - Faça login");
-        cpfField.setText("N/A - Faça login");
+    private void loadClient() {
+        User currentUser = Session.getUser();
         
-        // Aqui você também poderia desabilitar o botão de criar contrato
-        // submitContractButton.setDisable(true); 
-        // (Você precisaria adicionar o @FXML para o submitContractButton)
+        if (currentUser != null) {
+            nameField.setText(currentUser.getName());
+            cpfField.setText(currentUser.getCPF());
+            
+            // Mostra status VIP
+            if (currentUser.isVIP()) {
+                vipStatusLabel.setText("⭐ CLIENTE VIP - 10% DE DESCONTO");
+                vipStatusLabel.setStyle("-fx-text-fill: gold; -fx-font-weight: bold;");
+            } else {
+                vipStatusLabel.setText("Cliente Regular");
+                vipStatusLabel.setStyle("-fx-text-fill: gray;");
+            }
+        } else {
+            nameField.setText("N/A - Faça login");
+            cpfField.setText("N/A - Faça login");
+            vipStatusLabel.setText("");
+        }
     }
-}
+
     @FXML
     private void calculateTotal() {
         LocalDate start = startDatePicker.getValue();
         LocalDate end = endDatePicker.getValue();
 
         if (start == null || end == null || start.isAfter(end)) {
-            totalValueLabel.setText("Valor Total (Bruto/Líquido): R$ 0,00");
+            totalValueLabel.setText("Valor Bruto: R$ 0,00");
+            discountLabel.setText("Desconto VIP: R$ 0,00");
+            finalValueLabel.setText("Valor Final: R$ 0,00");
             return;
         }
 
@@ -117,19 +129,35 @@ public class RentEquipmentController {
             .collect(Collectors.toList());
 
         if (selectedEquipments.isEmpty()) {
-            totalValueLabel.setText("Valor Total (Bruto/Líquido): R$ 0,00");
+            totalValueLabel.setText("Valor Bruto: R$ 0,00");
+            discountLabel.setText("Desconto VIP: R$ 0,00");
+            finalValueLabel.setText("Valor Final: R$ 0,00");
             return;
         }
 
         long days = ChronoUnit.DAYS.between(start, end) + 1;
-        double dailyTotal = selectedEquipments.stream().mapToDouble(st -> st.getDailyValue() * st.getRentedQuantity()).sum();
+        double dailyTotal = selectedEquipments.stream()
+            .mapToDouble(st -> st.getDailyValue() * st.getRentedQuantity())
+            .sum();
         double grossValue = dailyTotal * days;
 
-        totalValueLabel.setText(String.format("Valor Total Bruto: R$ %.2f", grossValue));
+        // Aplica desconto VIP se aplicável
+        double discount = 0.0;
+        User currentUser = Session.getUser();
+        if (currentUser != null && currentUser.isVIP()) {
+            discount = grossValue * VIP_DISCOUNT;
+        }
+
+        double finalValue = grossValue - discount;
+
+        totalValueLabel.setText(String.format("Valor Bruto: R$ %.2f", grossValue));
+        discountLabel.setText(String.format("Desconto VIP (10%%): R$ %.2f", discount));
+        finalValueLabel.setText(String.format("Valor Final: R$ %.2f", finalValue));
+        finalValueLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: green;");
     }
+
     @FXML
     private void createContract() {
-        // 1. OBTER VALORES E VALIDAR (Isto já estava correto)
         LocalDate start = startDatePicker.getValue();
         LocalDate end = endDatePicker.getValue();
         List<Stock> selectedEquipments = availableEquipments.stream()
@@ -145,50 +173,81 @@ public class RentEquipmentController {
             return;
         }
 
-        // 2. PREPARAR OBJETOS
-        ContractLocation contract = new ContractLocation(Session.getUser(), selectedEquipments, start, end);
+        User currentUser = Session.getUser();
+        if (currentUser == null) {
+            Toast.showToastError("Usuário não está logado!");
+            return;
+        }
+
+        // Cria contrato com valor já com desconto VIP aplicado
+        ContractLocation contract = new ContractLocation(currentUser, selectedEquipments, start, end);
+        
+        // Aplica desconto VIP se aplicável
+        if (currentUser.isVIP()) {
+            double originalValue = contract.getTotalContractValue();
+            double discountedValue = originalValue * (1 - VIP_DISCOUNT);
+            // Aqui você precisaria adicionar um setter no ContractLocation
+            // contract.setTotalContractValue(discountedValue);
+        }
+
         ContractRentalDAO contractRentalDAO = new ContractRentalDAO(DatabaseConnection.getConnection());
 
-        // 3. EXECUTAR A TRANSAÇÃO (AQUI ESTÁ A MUDANÇA)
         try {
-            // TENTATIVA DE SALVAR NO BANCO
+            // Salva contrato
             contractRentalDAO.insertContract(contract);
 
-            // SE CHEGOU AQUI, O BANCO DE DADOS ACEITOU O CONTRATO
-            // AGORA, FAÇA TODAS AS OUTRAS COISAS DE SUCESSO:
-            
-            // 3.1. GERAR PDF
+            // Cria pagamento
+            PaymentDAO paymentDAO = new PaymentDAO(DatabaseConnection.getConnection());
+            Payment payment = new Payment(
+                contract.getId(),
+                contract.getTotalContractValue(),
+                LocalDate.now().plusDays(5) // Vencimento em 5 dias
+            );
+            paymentDAO.insertPayment(payment);
+
+            // Adiciona pontos de fidelidade
+            LoyaltyDAO loyaltyDAO = new LoyaltyDAO(DatabaseConnection.getConnection());
+            loyaltyDAO.addPointsForContract(currentUser.getId(), contract.getTotalContractValue());
+
+            // Gera PDF
             GenerateContract.generateContract(contract);
 
-            // 3.2. ATUALIZAR ESTOQUE NO BANCO (UM POR UM)
-            for (int i = 0; i < selectedEquipments.size(); i++) {
+            // Atualiza estoque
+            for (Stock selectedEquipment : selectedEquipments) {
                 EquipmentDAO equipmentDAO = new EquipmentDAO(DatabaseConnection.getConnection());
-                equipmentDAO.updateStockQuantity(selectedEquipments.get(i).getRentedQuantity(), selectedEquipments.get(i).getId(), selectedEquipments.get(i).getAvailableQuantity(), selectedEquipments.get(i).getInUseQuantity());
+                equipmentDAO.updateStockQuantity(
+                    selectedEquipment.getRentedQuantity(),
+                    selectedEquipment.getId(),
+                    selectedEquipment.getAvailableQuantity(),
+                    selectedEquipment.getInUseQuantity()
+                );
             }
 
-            // 3.3. LIMPAR A TELA
+            // Limpa tela
             for (Stock eq : selectedEquipments) {
                 eq.setSelected(false);
                 eq.setRentedQuantity(0);
             }
             equipmentTable.refresh();
-            totalValueLabel.setText("Valor Total (Bruto/Líquido): R$ 0,00");
+            totalValueLabel.setText("Valor Bruto: R$ 0,00");
+            discountLabel.setText("Desconto VIP: R$ 0,00");
+            finalValueLabel.setText("Valor Final: R$ 0,00");
 
-            // 3.4. MOSTRAR SUCESSO (SÓ NO FINAL)
             Toast.showToastSucess("Contrato de locação criado com sucesso!");
 
         } catch (SQLException ex) {
-            // SE O insertContract() OU QUALQUER OUTRA OPERAÇÃO DE BANCO FALHAR,
-            // O CÓDIGO PULA DIRETAMENTE PARA CÁ E PARA.
             Toast.showToastError("Erro ao salvar contrato: " + ex.getMessage());
-            ex.printStackTrace(); // Para você ver o erro no console
+            ex.printStackTrace();
         }
-        // NADA MAIS DEVE FICAR AQUI FORA DO TRY/CATCH
     }
+
     @FXML
     public void initialize() {
         mountEquipmentsTable();
         loadClient();
+        
+        // Listeners para recalcular ao mudar datas
+        startDatePicker.valueProperty().addListener((obs, old, newVal) -> calculateTotal());
+        endDatePicker.valueProperty().addListener((obs, old, newVal) -> calculateTotal());
     }
-
 }

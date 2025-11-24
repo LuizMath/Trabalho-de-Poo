@@ -23,8 +23,7 @@ public class ContractRentalDAO {
 
     public boolean insertContract(ContractLocation contract) throws SQLException {
         String sqlContract = "INSERT INTO Contract (id_user, start_date, end_date, total_value, status) VALUES (?, ?, ?, ?, ?)";
-        boolean success = false; // Este boolean é na verdade desnecessário, mas vamos manter
-
+        
         try {
             PreparedStatement stmtContract = connection.prepareStatement(sqlContract, PreparedStatement.RETURN_GENERATED_KEYS);
             stmtContract.setInt(1, contract.getClient().getId());
@@ -33,29 +32,35 @@ public class ContractRentalDAO {
             stmtContract.setDouble(4, contract.getTotalContractValue());
             stmtContract.setString(5, contract.getStatus());
             stmtContract.executeUpdate();
+            
             ResultSet rs = stmtContract.getGeneratedKeys();
-
             if (rs.next()) {
                 contract.setId(rs.getInt(1));
+                
+                // Insere equipamentos do contrato
                 EquipmentDAO equipmentDAO = new EquipmentDAO(connection);
                 for (int i = 0; i < contract.getRentedEquipments().size(); i++) {
-                    equipmentDAO.insertEquipmentsInItemContract(contract.getRentedEquipments().get(i).getRentedQuantity(), contract.getId(), contract.getRentedEquipments().get(i).getId(), contract.getRentedEquipments().get(i).getDailyValue());
-                };
-                success = true;
-            }
-            if (success) { // 2. 'success' AINDA É 'false', então este Toast NUNCA roda
-                Toast.showToastSucess("Contrato de Locação Criado!");
+                    equipmentDAO.insertEquipmentsInItemContract(
+                        contract.getRentedEquipments().get(i).getRentedQuantity(), 
+                        contract.getId(), 
+                        contract.getRentedEquipments().get(i).getId(), 
+                        contract.getRentedEquipments().get(i).getDailyValue()
+                    );
+                }
+                return true;
             }
         } catch (SQLException ex) {
             Toast.showToastError("Erro ao criar Contrato!");
+            throw ex;
         } finally {
             DatabaseConnection.getDisconnect();
         }
-        return success;
+        return false;
     }
+
     public ObservableList<ContractLocation> getContractsByUserId(int userId) {
         ObservableList<ContractLocation> contracts = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM Contract WHERE id_user = ?";
+        String sql = "SELECT * FROM Contract WHERE id_user = ? ORDER BY start_date DESC";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -77,25 +82,113 @@ public class ContractRentalDAO {
         }
         return contracts;
     }
-    public ObservableList<Equipment> getEquipmentsByContractId (int id) {
-        ObservableList<Equipment> equipments = FXCollections.observableArrayList();
-        String sql = "select Ic.quantity, Ic.id_contract, Eq.name from ItemContract as Ic inner join Equipments as Eq on Ic.id_equipament = Eq.id";
+
+    public ObservableList<ContractLocation> getActiveContractsByUserId(int userId) {
+        ObservableList<ContractLocation> contracts = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM Contract WHERE id_user = ? AND status = 'ativo' ORDER BY start_date DESC";
+
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
-                if (rs.getInt("id_contract") == id) {
-                    String name = rs.getString("name");
-                    int quantityRented = rs.getInt("quantity");
-                    equipments.add(new Equipment(name, quantityRented));
-                }
+                int id = rs.getInt("id_contract");
+                LocalDate startDate = rs.getDate("start_date").toLocalDate();
+                LocalDate endDate = rs.getDate("end_date").toLocalDate();
+                double totalValue = rs.getDouble("total_value");
+                String status = rs.getString("status");
+                contracts.add(new ContractLocation(id, startDate, endDate, totalValue, status));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Erro ao buscar contratos ativos: " + ex.getMessage());
+        } finally {
+             DatabaseConnection.getDisconnect();
+        }
+        return contracts;
+    }
+
+    public ObservableList<Equipment> getEquipmentsByContractId(int id) {
+        ObservableList<Equipment> equipments = FXCollections.observableArrayList();
+        String sql = "SELECT Ic.quantity, Ic.id_contract, Eq.id, Eq.name, Eq.damage_fee FROM ItemContract as Ic " +
+                     "INNER JOIN Equipments as Eq ON Ic.id_equipament = Eq.id WHERE Ic.id_contract = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Equipment equipment = new Equipment(rs.getString("name"), rs.getInt("quantity"));
+                equipment.setId(rs.getInt("id"));
+                equipment.setDamageFee(rs.getDouble("damage_fee"));
+                equipments.add(equipment);
             }
             DatabaseConnection.getDisconnect();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        System.out.println(equipments);
         return equipments;
     }
-}
 
+    public boolean finalizeContract(int contractId, LocalDate returnDate, double lateFee, 
+                                    double damageFee, String observations) throws SQLException {
+        String sql = "UPDATE Contract SET status = 'finalizado', return_date = ?, late_fee = ?, " +
+                     "damage_fee = ?, observations = ? WHERE id_contract = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setDate(1, Date.valueOf(returnDate));
+            stmt.setDouble(2, lateFee);
+            stmt.setDouble(3, damageFee);
+            stmt.setString(4, observations);
+            stmt.setInt(5, contractId);
+            
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            System.out.println("Erro ao finalizar contrato: " + ex.getMessage());
+            throw ex;
+        } finally {
+            DatabaseConnection.getDisconnect();
+        }
+    }
+
+    public boolean registerDamage(int contractId, String damageDescription, double damageFee) throws SQLException {
+        String sql = "INSERT INTO ContractDamage (id_contract, description, damage_fee, registered_date) VALUES (?, ?, ?, ?)";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, contractId);
+            stmt.setString(2, damageDescription);
+            stmt.setDouble(3, damageFee);
+            stmt.setDate(4, Date.valueOf(LocalDate.now()));
+            
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println("Erro ao registrar dano: " + ex.getMessage());
+            throw ex;
+        } finally {
+            DatabaseConnection.getDisconnect();
+        }
+    }
+
+    public boolean renewContract(int contractId, int additionalDays) throws SQLException {
+        String sql = "UPDATE Contract SET end_date = DATE_ADD(end_date, INTERVAL ? DAY) WHERE id_contract = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, additionalDays);
+            stmt.setInt(2, contractId);
+            
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                Toast.showToastSucess("Contrato renovado com sucesso!");
+                return true;
+            }
+        } catch (SQLException ex) {
+            Toast.showToastError("Erro ao renovar contrato!");
+            throw ex;
+        } finally {
+            DatabaseConnection.getDisconnect();
+        }
+        return false;
+    }
+}
