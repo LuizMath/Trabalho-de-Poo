@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" 
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.construmax.Controllers.ReportsController"
+      spacing="20" 
+      padding="20">
+    
+    <Label text="Relatórios do Sistema" 
+           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    
+    <TabPane fx:id="reportsTabPane" VBox.vgrow="ALWAYS">
+        <Tab text="Contratos" closable="false">
+            <VBox spacing="10" padding="10">
+                <HBox spacing="10">
+                    <Label text="Data Início:"/>
+                    <DatePicker fx:id="startDateFilter" promptText="De"/>
+                    
+                    <Label text="Data Fim:"/>
+                    <DatePicker fx:id="endDateFilter" promptText="Até"/>
+                    
+                    <Label text="Status:"/>
+                    <ComboBox fx:id="statusFilter" prefWidth="120"/>
+                    
+                    <Button text="Filtrar" onAction="#loadContractsReport" 
+                            style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+                    <Button text="Limpar" onAction="#clearFilters" 
+                            style="-fx-background-color: #95a5a6; -fx-text-fill: white;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="exportContractsButton" 
+                            text="Exportar PDF" 
+                            onAction="#exportContractsReport"
+                            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                </HBox>
+                <TableView fx:id="contractsReportTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colContractId" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="colContractStart" text="Data Início" prefWidth="120"/>
+                        <TableColumn fx:id="colContractEnd" text="Data Fim" prefWidth="120"/>
+                        <TableColumn fx:id="colContractValue" text="Valor" prefWidth="120"/>
+                        <TableColumn fx:id="colContractStatus" text="Status" prefWidth="100"/>
+                    </columns>
+                </TableView>
+                <HBox spacing="30" 
+                      style="-fx-background-color: #d5f4e6; -fx-padding: 15; -fx-border-color: #27ae60; -fx-border-width: 2;">
+                    <Label fx:id="totalContractsLabel" 
+                           text="Total de Contratos: 0" 
+                           style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <Label fx:id="totalRevenueLabel" 
+                           text="Receita Total: R$ 0,00" 
+                           style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: green;"/>
+                </HBox>
+            </VBox>
+        </Tab>
+        <Tab text="Equipamentos" closable="false">
+            <VBox spacing="10" padding="10">
+                <HBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Exportar PDF" 
+                            onAction="#exportEquipmentsReport"
+                            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                </HBox>
+                <TableView fx:id="equipmentsReportTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colEquipName" text="Nome" prefWidth="150"/>
+                        <TableColumn fx:id="colEquipType" text="Tipo" prefWidth="120"/>
+                        <TableColumn fx:id="colEquipTotal" text="Total" prefWidth="80"/>
+                        <TableColumn fx:id="colEquipAvailable" text="Disponível" prefWidth="100"/>
+                        <TableColumn fx:id="colEquipInUse" text="Em Uso" prefWidth="100"/>
+                        <TableColumn fx:id="colEquipMaintenance" text="Manutenção" prefWidth="100"/>
+                    </columns>
+                </TableView>
+                <HBox spacing="30" 
+                      style="-fx-background-color: #d6eaf8; -fx-padding: 15; -fx-border-color: #3498db; -fx-border-width: 2;">
+                    <Label fx:id="totalEquipmentsLabel" 
+                           text="Total de Equipamentos: 0" 
+                           style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <Label fx:id="utilizationRateLabel" 
+                           text="Taxa de Utilização: 0%" 
+                           style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #3498db;"/>
+                </HBox>
+            </VBox>
+        </Tab>
+        <Tab text="🔧 Manutenções" closable="false">
+            <VBox spacing="10" padding="10">
+                <HBox spacing="10">
+                    <Label text="Status:"/>
+                    <ComboBox fx:id="maintenanceStatusFilter" prefWidth="150"/>
+                    
+                    <Button text="Filtrar" onAction="#loadMaintenanceReport" 
+                            style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Exportar PDF" 
+                            onAction="#exportMaintenanceReport"
+                            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                </HBox>
+                <TableView fx:id="maintenanceReportTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colMaintEquipName" text="Equipamento" prefWidth="150"/>
+                        <TableColumn fx:id="colMaintScheduled" text="Agendado" prefWidth="120"/>
+                        <TableColumn fx:id="colMaintCompleted" text="Concluído" prefWidth="120"/>
+                        <TableColumn fx:id="colMaintType" text="Tipo" prefWidth="100"/>
+                        <TableColumn fx:id="colMaintStatus" text="Status" prefWidth="120"/>
+                        <TableColumn fx:id="colMaintCost" text="Custo" prefWidth="100"/>
+                    </columns>
+                </TableView>
+                <HBox spacing="30" 
+                      style="-fx-background-color: #fadbd8; -fx-padding: 15; -fx-border-color: #e74c3c; -fx-border-width: 2;">
+                    <Label fx:id="scheduledMaintenancesLabel" 
+                           text="Manutenções Agendadas: 0" 
+                           style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <Label fx:id="completedMaintenancesLabel" 
+                           text="Manutenções Concluídas: 0" 
+                           style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <Label fx:id="totalMaintenanceCostLabel" 
+                           text="Custo Total: R$ 0,00" 
+                           style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #e74c3c;"/>
+                </HBox>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox>

@@ -51,9 +51,21 @@ public class HomeController {
               loadView("contracts");
               break;
             }
+            case "payments": {
+              loadView("payments");
+              break;
+            }
+            case "maintenance": {
+              loadView("maintenance");
+              break;
+            }
+            case "reports": {
+              loadView("reports");
+              break;
+            }
             default:
               break;
-          }
+          }            
         }
       }
     }));

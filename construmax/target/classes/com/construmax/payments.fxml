@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" 
+      xmlns:fx="http://javafx.com/fxml"
+      spacing="20" 
+      padding="20">
+    <Label text="Gestão de Pagamentos" 
+           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    
+    <HBox spacing="10">
+        <Button text="Todos os Pagamentos" onAction="#showAll" 
+                style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+        <Button text="Apenas Pendentes" onAction="#filterPending" 
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+    </HBox>
+    <TableView fx:id="paymentsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colContractId" text="Contrato #" prefWidth="80"/>
+            <TableColumn fx:id="colAmount" text="Valor" prefWidth="100"/>
+            <TableColumn fx:id="colDueDate" text="Vencimento" prefWidth="120"/>
+            <TableColumn fx:id="colPaymentDate" text="Data Pagamento" prefWidth="120"/>
+            <TableColumn fx:id="colStatus" text="Status" prefWidth="100"/>
+            <TableColumn fx:id="colLateFee" text="Multa" prefWidth="100"/>
+            <TableColumn fx:id="colActions" text="Ações" prefWidth="120"/>
+        </columns>
+    </TableView>
+    <HBox spacing="30" style="-fx-background-color: #ecf0f1; -fx-padding: 15;">
+        <VBox spacing="5">
+            <Label text="Financeiro" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+            <Label fx:id="totalPendingLabel" text="Total Pendente: R$ 0,00"/>
+            <Label fx:id="totalPaidLabel" text="Total Pago: R$ 0,00"/>
+            <Label fx:id="totalLateFeesLabel" text="Total em Multas: R$ 0,00"/>
+        </VBox>
+    </HBox>
+    
+    <Separator/>
+    <Label text="Programa de Fidelidade" 
+           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #f39c12;"/>
+    
+    <GridPane hgap="20" vgap="10" 
+              style="-fx-background-color: #fff3cd; -fx-padding: 15; -fx-border-color: #f39c12; -fx-border-width: 2;">
+        <Label fx:id="loyaltyPointsLabel" text="Pontos: 0" 
+               style="-fx-font-weight: bold; -fx-font-size: 16px;"
+               GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="totalContractsLabel" text="Total de Contratos: 0" 
+               GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label fx:id="totalSpentLabel" text="Total Gasto: R$ 0,00" 
+               GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label fx:id="availableDiscountLabel" text="Desconto Disponível: R$ 0,00" 
+               style="-fx-font-weight: bold; -fx-text-fill: green;"
+               GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+    </GridPane>
+    
+    <Button fx:id="usePointsButton" text="Usar Pontos no Próximo Pagamento" 
+            onAction="#usePoints"
+            style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+</VBox>
