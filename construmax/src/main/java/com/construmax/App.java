@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.io.IOException;
@@ -17,6 +18,10 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
+        primaryStage.setTitle("Construmax");
+        primaryStage.getIcons().add(new Image(
+            getClass().getResourceAsStream("/com/construmax/Icon/tools.png")
+        ));
         scene = new Scene(loadFXML("login"), 640, 480);
         stage.setScene(scene);
         stage.show();
